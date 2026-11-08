@@ -130,6 +130,24 @@
       .sources-card.open .sources-head .chev { transform: rotate(180deg); }
       .sources-body { display: none; border-top: 1px solid var(--line); padding: 6px 16px 14px; }
       .sources-card.open .sources-body { display: block; }
+
+      /* ---------- Add a source (collapsible) ---------- */
+      .add-source-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; margin-top: 14px; }
+      .add-source-head {
+        width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
+        background: none; border: 0; padding: 14px 16px; cursor: pointer; min-height: 56px;
+      }
+      .add-source-head .t { font-weight: 600; font-size: 15.5px; white-space: nowrap; }
+      .add-source-head .s { color: var(--ink-2); font-size: 12.5px; margin-left: auto; font-family: "IBM Plex Mono", monospace; white-space: normal; overflow-wrap: break-word; text-align: right; min-width: 0; }
+      .add-source-head .chev { transition: transform 0.18s ease; color: var(--ink-3); display: inline-flex; flex: none; }
+      .add-source-head .chev svg { width: 16px; height: 16px; }
+      .add-source-card.open .add-source-head .chev { transform: rotate(180deg); }
+      .add-source-body { display: none; border-top: 1px solid var(--line); padding: 18px 16px; }
+      .add-source-card.open .add-source-body { display: block; }
+      .add-source-body h2 { font-size: 17px; margin: 0 0 6px; font-weight: 600; letter-spacing: -0.01em; }
+      .add-source-body p { font-size: 14px; color: var(--ink-2); margin: 0 0 12px; }
+      .add-source-body label.f-label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 6px; }
+      .add-source-body label.f-label:first-of-type { margin-top: 4px; }
       .source-row { display: flex; justify-content: space-between; gap: 4px 12px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14.5px; flex-wrap: wrap; align-items: baseline; }
       .source-row:last-child { border-bottom: 0; }
       .source-row .what { color: var(--ink-2); font-size: 13px; text-align: right; overflow-wrap: break-word; min-width: 0; }
@@ -423,25 +441,31 @@
           <div class="sources-body" id="sources-body"></div>
         </div>
 
-        <h2 class="section-title" id="add-source-anchor">Add a source</h2>
-        <div class="panel" id="add-source-panel">
-          <h2>Point EventOS at a whole platform</h2>
-          <p>Paste a source link — a platform or directory like Eventbrite, Luma or Peatix, a venue&rsquo;s events page, or an organiser&rsquo;s listing page. Not a single event: a place that publishes events. EventOS checks it against the source guidelines first, then your Gemini key reads it and pulls its current events into your feed. The source stays watched below, and <strong>Refresh sources</strong> scans your watched sources again for new events.</p>
-          <div class="guidelines"><strong>Before a source is accepted:</strong> it must be readable without logging in, its link must lead to listings or sign-up (not news coverage), and a per-event page with no way to register does not count as existing. Login-walled platforms (LinkedIn, Instagram) and news round-ups are rejected, with the failed rule shown.</div>
-          <label class="f-label" for="source-url-input">Source link</label>
-          <input type="text" id="source-url-input" placeholder="e.g. https://www.eventbrite.com/d/singapore--singapore/events/" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" />
-          <label class="f-label" for="source-name-input">Name it (optional)</label>
-          <input type="text" id="source-name-input" placeholder="e.g. Eventbrite Singapore" maxlength="60" autocomplete="off" />
-          <div class="btn-row">
-            <button class="btn primary" type="button" id="source-check-btn">Check &amp; add source</button>
-            <button class="btn" type="button" id="source-refresh-btn">Refresh sources</button>
+        <div class="add-source-card" id="add-source-panel">
+          <button class="add-source-head" type="button" id="add-source-toggle" aria-expanded="false" aria-controls="add-source-body">
+            <span class="t" id="add-source-anchor">Add a source</span>
+            <span class="s" id="add-source-summary">Eventbrite · Luma · Peatix…</span>
+            <span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="add-source-body" id="add-source-body">
+            <h2>Point EventOS at a whole platform</h2>
+            <p>Paste a source link — a platform or directory like Eventbrite, Luma or Peatix, a venue&rsquo;s events page, or an organiser&rsquo;s listing page. Not a single event: a place that publishes events. EventOS checks it against the source guidelines first, then your Gemini key reads it and pulls its current events into your feed. The source stays watched below, and <strong>Refresh sources</strong> scans your watched sources again for new events.</p>
+            <div class="guidelines"><strong>Before a source is accepted:</strong> it must be readable without logging in, its link must lead to listings or sign-up (not news coverage), and a per-event page with no way to register does not count as existing. Login-walled platforms (LinkedIn, Instagram) and news round-ups are rejected, with the failed rule shown.</div>
+            <label class="f-label" for="source-url-input">Source link</label>
+            <input type="text" id="source-url-input" placeholder="e.g. https://www.eventbrite.com/d/singapore--singapore/events/" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" />
+            <label class="f-label" for="source-name-input">Name it (optional)</label>
+            <input type="text" id="source-name-input" placeholder="e.g. Eventbrite Singapore" maxlength="60" autocomplete="off" />
+            <div class="btn-row">
+              <button class="btn primary" type="button" id="source-check-btn">Check &amp; add source</button>
+              <button class="btn" type="button" id="source-refresh-btn">Refresh sources</button>
+            </div>
+            <div class="status-line" id="source-status" role="status"></div>
+            <div id="source-gate-result"></div>
+            <h3 style="font-size:15px;margin:18px 0 6px;">Your watched sources</h3>
+            <p style="margin-bottom:6px;">These live in this browser, alongside your key. Refreshing this page keeps them; refreshing the sources below is what brings in new events.</p>
+            <div id="custom-sources-list"></div>
+            <p class="fineprint">How it works on this public page: there is no EventOS server scanning in the background. Mining and refreshing happen in your browser, using your key, when you tap Check &amp; add or Refresh — that is the honest limit of a static page. Your private feed is the one with the automatic daily scan.</p>
           </div>
-          <div class="status-line" id="source-status" role="status"></div>
-          <div id="source-gate-result"></div>
-          <h3 style="font-size:15px;margin:18px 0 6px;">Your watched sources</h3>
-          <p style="margin-bottom:6px;">These live in this browser, alongside your key. Refreshing this page keeps them; refreshing the sources below is what brings in new events.</p>
-          <div id="custom-sources-list"></div>
-          <p class="fineprint">How it works on this public page: there is no EventOS server scanning in the background. Mining and refreshing happen in your browser, using your key, when you tap Check &amp; add or Refresh — that is the honest limit of a static page. Your private feed is the one with the automatic daily scan.</p>
         </div>
 
         <h2 class="section-title">Coming up next</h2>
@@ -773,6 +797,7 @@
         added: [],        // events extracted by this visitor, this session
         customSources: [], // visitor-added sources: {name, url, verdict, addedAt, lastChecked, found}
         sourcesOpen: false,
+        addSourceOpen: false,
         archivedOpen: false,
         openTrackFor: null
       };
@@ -1247,6 +1272,12 @@
         }
         $("sources-card").classList.toggle("open", state.sourcesOpen);
         $("sources-toggle").setAttribute("aria-expanded", state.sourcesOpen ? "true" : "false");
+        var asc = $("add-source-panel");
+        if (asc) asc.classList.toggle("open", state.addSourceOpen);
+        var ast = $("add-source-toggle");
+        if (ast) ast.setAttribute("aria-expanded", state.addSourceOpen ? "true" : "false");
+        var ass = $("add-source-summary");
+        if (ass) ass.textContent = state.customSources.length ? state.customSources.length + " watched · tap to manage" : "Eventbrite · Luma · Peatix…";
         renderCustomSourcesList();
       }
 
@@ -1718,6 +1749,7 @@
         m.appendChild(b);
       }
       function addSourceFlow() {
+        state.addSourceOpen = true;
         var rawUrl = ($("source-url-input").value || "").trim();
         var href = safeUrl(rawUrl);
         if (!rawUrl) { sourceMsg("Paste a source link first — a platform or listing page, like Eventbrite's Singapore events page.", "bad"); return; }
@@ -1745,6 +1777,7 @@
         }).then(function () { btn.disabled = false; });
       }
       function refreshSourcesFlow() {
+        state.addSourceOpen = true;
         if (!state.customSources.length) { sourceMsg("No sources added by you yet — add a platform above first. The built-in starter list is a fixed snapshot and does not refresh on this public page.", "bad"); return; }
         var key = getKey();
         if (!key) { needKeyPrompt("Refreshing needs your Gemini key — it does the reading on each source."); return; }
@@ -1823,7 +1856,7 @@
           b.addEventListener("click", function () {
             var g = b.getAttribute("data-goto");
             if (g === "saved") { state.tab = "saved"; syncTabs(); showView("events", true); }
-            else if (g === "add-source") { showView("home", false); var sp = $("add-source-panel"); if (sp) sp.scrollIntoView({ behavior: "smooth", block: "center" }); var si2 = $("source-url-input"); if (si2) si2.focus({ preventScroll: true }); }
+            else if (g === "add-source") { state.addSourceOpen = true; showView("home", false); var sp = $("add-source-panel"); if (sp) sp.scrollIntoView({ behavior: "smooth", block: "center" }); var si2 = $("source-url-input"); if (si2) si2.focus({ preventScroll: true }); }
             else if (g === "add") { showView("events", true); var p = $("add-panel"); if (p) p.scrollIntoView({ behavior: "smooth", block: "center" }); }
             else showView(g, true);
           });
@@ -1889,9 +1922,12 @@
           renderEvents(); si.focus();
         });
 
-        // Sources + Archived toggles
+        // Sources + Add a source + Archived toggles
         $("sources-toggle").addEventListener("click", function () {
           state.sourcesOpen = !state.sourcesOpen; renderHome();
+        });
+        $("add-source-toggle").addEventListener("click", function () {
+          state.addSourceOpen = !state.addSourceOpen; renderHome();
         });
         $("arch-toggle").addEventListener("click", function () {
           state.archivedOpen = !state.archivedOpen; renderEvents();
