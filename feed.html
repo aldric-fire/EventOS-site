@@ -3,62 +3,38 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
-    <title>EventOS Public</title>
+    <title>eventos — Discover what's next.</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
       :root {
-        --bg: #f4f3ee;
-        --surface: #ffffff;
-        --surface-2: #eceade;
-        --ink: #182119;
-        --ink-2: #59645b;
-        --ink-3: #8a938a;
-        --line: #dddacd;
-        --accent: #0c6b4f;
-        --accent-strong: #09573f;
-        --accent-soft: #e2efe8;
-        --warn: #a03a24;
-        --warn-soft: #f9e9e3;
-        --ok: #0c6b4f;
-        --shadow: 0 1px 2px rgba(24, 33, 25, 0.05), 0 8px 24px -18px rgba(24, 33, 25, 0.35);
-        --nav-bg: rgba(255, 255, 255, 0.92);
-        --cat-cyber: #b3402a;
-        --cat-tech: #2e6482;
-        --cat-fintech: #7a5c14;
-        --cat-ai: #177e70;
-        --cat-ent: #b45f06;
-        --cat-hack: #0c6b4f;
-        --cat-careers: #5a665e;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0f130f;
-          --surface: #171c17;
-          --surface-2: #20261f;
-          --ink: #e9ede6;
-          --ink-2: #a4aea2;
-          --ink-3: #77816f;
-          --line: #2b332a;
-          --accent: #3ec48f;
-          --accent-strong: #63d3a5;
-          --accent-soft: #173327;
-          --warn: #e08a6d;
-          --warn-soft: #38231b;
-          --ok: #3ec48f;
-          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -18px rgba(0, 0, 0, 0.8);
-          --nav-bg: rgba(18, 22, 18, 0.92);
-          --cat-cyber: #e08a6d;
-          --cat-tech: #7fb3cc;
-          --cat-fintech: #d3ab4e;
-          --cat-ai: #5cc4b2;
-          --cat-ent: #e29a4e;
-          --cat-hack: #3ec48f;
-          --cat-careers: #a4aea2;
-        }
+        color-scheme: dark;
+        --bg: #101727;
+        --surface: #182138;
+        --surface-2: #1f2a47;
+        --ink: #ffffff;
+        --ink-2: #a3a9b9;
+        --ink-3: #7e879c;
+        --line: #2a3552;
+        --accent: #8b82ff;
+        --accent-strong: #a29bff;
+        --accent-soft: #262a52;
+        --on-accent: #101727;
+        --warn: #c3c9d6;
+        --warn-soft: #2a2f47;
+        --ok: #8b82ff;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px -18px rgba(0, 0, 0, 0.8);
+        --nav-bg: rgba(16, 23, 39, 0.94);
+        --cat-cyber: #8b82ff;
+        --cat-tech: #8b82ff;
+        --cat-fintech: #8b82ff;
+        --cat-ai: #8b82ff;
+        --cat-ent: #8b82ff;
+        --cat-hack: #8b82ff;
+        --cat-careers: #8b82ff;
       }
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; scroll-padding-top: 76px; scroll-padding-bottom: 110px; }
@@ -85,13 +61,19 @@
         border-bottom: 1px solid var(--line);
       }
       .topbar-in { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
-      .brand { font-weight: 700; font-size: 19px; letter-spacing: -0.02em; }
+      .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+      .brand-mark { flex: none; display: inline-flex; width: 40px; height: 40px; }
+      .brand-mark svg { width: 40px; height: 40px; display: block; }
+      .brand-text { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
+      .brand-row { display: flex; align-items: center; gap: 7px; }
+      .wordmark { font-weight: 700; font-size: 23px; letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
+      .brand-tagline { font-size: 11.5px; color: var(--ink-2); margin-top: 3px; letter-spacing: 0.01em; white-space: nowrap; }
       .brand .pub {
         font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600;
         text-transform: uppercase; letter-spacing: 0.08em;
         color: var(--accent); background: var(--accent-soft);
         border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px;
-        vertical-align: 3px; margin-left: 6px;
+        flex: none;
       }
       .topbar .spacer { flex: 1; }
       .icon-btn {
@@ -165,15 +147,15 @@
         cursor: pointer; min-height: 36px; display: inline-flex; align-items: center; gap: 7px;
       }
       .chip .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--ink-3); flex: none; }
-      .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-      .chip[aria-pressed="true"] .dot { background: var(--bg); }
+      .chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+      .chip[aria-pressed="true"] .dot { background: var(--on-accent); }
 
       .tabs { display: flex; gap: 2px; background: var(--surface-2); border-radius: 11px; padding: 3px; margin: 0 0 14px; }
       .tabs button {
         flex: 1; border: 0; background: none; border-radius: 8px; padding: 9px 4px;
         font-size: 14px; font-weight: 500; color: var(--ink-2); cursor: pointer; min-height: 40px;
       }
-      .tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: var(--shadow); }
+      .tabs button[aria-selected="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; box-shadow: var(--shadow); }
       .results-line { font-size: 13.5px; color: var(--ink-2); margin: 0 2px 12px; min-height: 18px; }
 
       /* ---------- Event cards ---------- */
@@ -213,9 +195,8 @@
       }
       .btn svg { width: 15px; height: 15px; flex: none; }
       .btn:active { background: var(--surface-2); }
-      .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-      @media (prefers-color-scheme: dark) { .btn.primary { color: #0b1512; } }
-      .btn.primary:active { background: var(--accent-strong); }
+      .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+      .btn.primary:active { background: var(--accent-strong); border-color: var(--accent-strong); }
       .btn.small { min-height: 36px; padding: 6px 11px; font-size: 13.5px; }
       .btn[disabled] { opacity: 0.55; cursor: default; }
       .link-inert { font-size: 13.5px; color: var(--warn); font-weight: 500; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
@@ -235,8 +216,7 @@
       .track-btn .fill { position: absolute; inset: 0; width: 0%; background: var(--accent-soft); pointer-events: none; }
       .track-btn .lbl { position: relative; display: inline-flex; align-items: center; gap: 7px; }
       .track-btn .lbl svg { width: 15px; height: 15px; }
-      .track-btn.set { background: var(--accent); border-color: var(--accent); color: #fff; }
-      @media (prefers-color-scheme: dark) { .track-btn.set { color: #0b1512; } }
+      .track-btn.set { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
       .track-btn.set .fill { background: transparent; }
       .track-opts {
         display: none; gap: 6px; flex-wrap: wrap; margin-top: 9px;
@@ -251,8 +231,7 @@
       }
       .track-opt .fill { position: absolute; inset: 0; width: 0%; background: var(--accent-soft); pointer-events: none; }
       .track-opt .lbl { position: relative; }
-      .track-opt[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
-      @media (prefers-color-scheme: dark) { .track-opt[aria-pressed="true"] { color: #0b1512; } }
+      .track-opt[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
       .track-opt.clear { flex: 0 0 auto; min-width: 0; padding: 0 12px; font-weight: 500; color: var(--ink-2); }
 
       /* ---------- Panels (add / settings) ---------- */
@@ -329,13 +308,20 @@
       .nav-item[aria-current="page"] { color: var(--accent); font-weight: 600; }
       .nav-badge {
         position: absolute; top: 5px; left: calc(50% + 3px);
-        background: var(--accent); color: #fff; font-family: "IBM Plex Mono", monospace;
+        background: var(--accent); color: var(--on-accent); font-family: "IBM Plex Mono", monospace;
         font-size: 10.5px; font-weight: 600; border-radius: 999px; min-width: 19px; height: 19px;
         display: none; align-items: center; justify-content: center; padding: 0 5px;
       }
-      @media (prefers-color-scheme: dark) { .nav-badge { color: #0b1512; } }
       .nav-badge.show { display: inline-flex; }
 
+      @media (max-width: 430px) {
+        .brand { gap: 8px; }
+        .brand-mark, .brand-mark svg { width: 34px; height: 34px; }
+        .wordmark { font-size: 20px; }
+        .brand-tagline { font-size: 10.5px; }
+        .brand .pub { padding: 2px 6px; font-size: 9.5px; }
+        .icon-btn { padding: 8px 10px; font-size: 13.5px; }
+      }
       @media (max-width: 639px) {
         main { padding-top: 10px; }
         .lede { margin-bottom: 12px; }
@@ -355,7 +341,13 @@
   <body>
     <header class="topbar">
       <div class="wrap topbar-in">
-        <div class="brand">EventOS<span class="pub">Public</span></div>
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M28.6 11.4A14.5 14.5 0 1 0 35.4 20.8" stroke="#8B82FF" stroke-width="3.6" stroke-linecap="round"/><circle cx="34.2" cy="7.6" r="3.4" fill="#8B82FF"/><circle cx="20.8" cy="23.6" r="5.8" fill="#8B82FF"/></svg></span>
+          <span class="brand-text">
+            <span class="brand-row"><span class="wordmark">eventos</span><span class="pub">Public</span></span>
+            <span class="brand-tagline">Discover what's next.</span>
+          </span>
+        </div>
         <div class="spacer"></div>
         <button class="icon-btn" id="settings-btn" type="button" aria-label="Open settings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
