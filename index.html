@@ -3,30 +3,38 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>EventOS — Never miss an event in Singapore</title>
-  <meta name="description" content="EventOS is a personal AI-powered platform that discovers, organises and tracks tech, cybersecurity and entrepreneurship events around you in Singapore, from scattered sources into one personalised feed.">
+  <title>eventos — Discover what's next.</title>
+  <meta name="description" content="eventos is a personal AI-powered platform that discovers, organises and tracks tech, cybersecurity and entrepreneurship events around you in Singapore, from scattered sources into one personalised feed. Discover what's next.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23101727'/%3E%3Ccircle cx='50' cy='52' r='36' fill='none' stroke='%238b82ff' stroke-width='8' stroke-dasharray='190 36' transform='rotate(115 50 52)'/%3E%3Ccircle cx='79' cy='26' r='8' fill='%238b82ff'/%3E%3Ccircle cx='50' cy='52' r='14' fill='%238b82ff'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="top">
     <div class="wrap top-inner">
-      <span class="logo">🪨 EventOS</span>
+      <span class="brand">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="52" r="36" fill="none" stroke="#8b82ff" stroke-width="8" stroke-dasharray="190 36" transform="rotate(115 50 52)"/><circle cx="79" cy="26" r="8" fill="#8b82ff"/><circle cx="50" cy="52" r="14" fill="#8b82ff"/></svg>
+        <span class="wordmark">eventos</span>
+      </span>
       <span class="tag">Singapore · Tech · Cybersecurity · Entrepreneurship</span>
     </div>
   </header>
 
   <main>
     <section class="hero wrap">
-      <p class="eyebrow">A personal discovery engine</p>
+      <div class="lockup">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="52" r="36" fill="none" stroke="#8b82ff" stroke-width="8" stroke-dasharray="190 36" transform="rotate(115 50 52)"/><circle cx="79" cy="26" r="8" fill="#8b82ff"/><circle cx="50" cy="52" r="14" fill="#8b82ff"/></svg>
+        <span class="lockup-word">eventos</span>
+      </div>
+      <p class="tagline">Discover what's next.</p>
       <h1>Every event that matters.<br>One feed. No noise.</h1>
-      <p class="lede">Events are scattered across LinkedIn, Telegram, WhatsApp communities, newsletters and individual websites. EventOS finds them, extracts the details, removes the duplicates, and puts them in one personalised feed — so you stop checking five platforms and start just showing up.</p>
-      <p class="note">Built for one person, in Singapore. Something genuinely used every day — not another AI demo.</p>
-      <p><a href="feed.html">Try the public tool →</a> — the EventOS feed, free for anyone to use with their own Gemini API key. Your key stays in your browser; nothing you do is saved or shared.</p>
+      <p class="lede">Events are scattered across LinkedIn, Telegram, WhatsApp communities, newsletters and individual websites. eventos finds them, extracts the details, removes the duplicates, and puts them in one personalised feed — so you stop checking five platforms and start just showing up.</p>
+      <p><a class="cta" href="feed.html">Try the public tool →</a></p>
+      <p class="note">Free for anyone to use with their own Gemini API key. Your key stays in your browser; nothing you do is saved or shared.</p>
     </section>
 
     <section class="wrap section">
       <h2>The problem</h2>
-      <p>A good event is easy to miss and a duplicate is easy to open twice. The same summit gets posted in a Telegram channel, summarised in a newsletter, and listed on the organiser's site — three cards, one event. A link that was live last week quietly dies. A price is never shown. EventOS exists to fix exactly that.</p>
+      <p>A good event is easy to miss and a duplicate is easy to open twice. The same summit gets posted in a Telegram channel, summarised in a newsletter, and listed on the organiser's site — three cards, one event. A link that was live last week quietly dies. A price is never shown. eventos exists to fix exactly that.</p>
     </section>
 
     <section class="wrap section">
@@ -67,13 +75,14 @@
     <section class="wrap section">
       <h2>Status</h2>
       <p>Phase 1 is built: the pipeline spine — rate-limited Gemini extraction, a raw store, deterministic dedupe, and a manual-capture inbox — lives in the private <a href="https://github.com/aldric-fire/eventos">eventos</a> repository. The personal feed itself stays private.</p>
+      <p>The public tool is live: <a href="feed.html">try the eventos feed</a> — free, with your own Gemini API key.</p>
       <p class="muted">Stack: Gemini for understanding and extraction · Python pipeline · GitHub for code.</p>
     </section>
   </main>
 
   <footer>
     <div class="wrap">
-      <p>EventOS — built to be opened every day.</p>
+      <p>eventos — Discover what's next.</p>
     </div>
   </footer>
 </body>
