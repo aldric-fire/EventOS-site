@@ -15,9 +15,10 @@
         --bg: #101727;
         --surface: #182138;
         --surface-2: #1f2a47;
+        --archived-bg: #141d33;
         --ink: #ffffff;
         --ink-2: #a3a9b9;
-        --ink-3: #7e879c;
+        --ink-3: #98a2b8;
         --line: #2a3552;
         --accent: #8b82ff;
         --accent-strong: #a29bff;
@@ -49,7 +50,18 @@
       }
       button { font: inherit; color: inherit; }
       a { color: var(--accent); }
-      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+      :focus-visible { outline: 3px solid var(--accent-strong); outline-offset: 2px; border-radius: 4px; }
+
+      /* Skip link: first tab stop, visible only when focused */
+      .skip-link {
+        position: absolute; left: 12px; top: -60px; z-index: 100;
+        background: var(--accent); color: var(--on-accent);
+        font-weight: 600; font-size: 14.5px; text-decoration: none;
+        padding: 12px 18px; border-radius: 0 0 10px 10px; min-height: 44px;
+        display: inline-flex; align-items: center;
+        transition: top 0.15s ease;
+      }
+      .skip-link:focus-visible { top: 0; outline-offset: -3px; }
 
       .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
 
@@ -71,7 +83,7 @@
       .brand .pub {
         font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600;
         text-transform: uppercase; letter-spacing: 0.08em;
-        color: var(--accent); background: var(--accent-soft);
+        color: var(--accent-strong); background: var(--accent-soft);
         border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px;
         flex: none;
       }
@@ -79,7 +91,8 @@
       .icon-btn {
         display: inline-flex; align-items: center; gap: 7px;
         background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
-        padding: 8px 12px; font-size: 14px; font-weight: 500; cursor: pointer; min-height: 40px;
+        padding: 8px 12px; font-size: 14px; font-weight: 500; cursor: pointer; min-height: 44px;
+        white-space: nowrap;
       }
       .icon-btn svg { width: 17px; height: 17px; flex: none; }
       .icon-btn:active { background: var(--surface-2); }
@@ -111,15 +124,15 @@
         background: none; border: 0; padding: 14px 16px; cursor: pointer; min-height: 48px;
       }
       .sources-head .t { font-weight: 600; font-size: 15px; }
-      .sources-head .s { color: var(--ink-2); font-size: 13px; margin-left: auto; font-family: "IBM Plex Mono", monospace; }
+      .sources-head .s { color: var(--ink-2); font-size: 13px; margin-left: auto; font-family: "IBM Plex Mono", monospace; white-space: normal; overflow-wrap: break-word; text-align: right; min-width: 0; }
       .sources-head .chev { transition: transform 0.18s ease; color: var(--ink-3); display: inline-flex; }
       .sources-head .chev svg { width: 16px; height: 16px; }
       .sources-card.open .sources-head .chev { transform: rotate(180deg); }
       .sources-body { display: none; border-top: 1px solid var(--line); padding: 6px 16px 14px; }
       .sources-card.open .sources-body { display: block; }
-      .source-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14.5px; }
+      .source-row { display: flex; justify-content: space-between; gap: 4px 12px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14.5px; flex-wrap: wrap; align-items: baseline; }
       .source-row:last-child { border-bottom: 0; }
-      .source-row .what { color: var(--ink-2); font-size: 13px; text-align: right; }
+      .source-row .what { color: var(--ink-2); font-size: 13px; text-align: right; overflow-wrap: break-word; min-width: 0; }
       .source-row a { font-weight: 500; text-decoration: none; }
       .source-row a:hover { text-decoration: underline; }
 
@@ -127,14 +140,15 @@
       .search-box { position: relative; margin: 4px 0 12px; }
       .search-box svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--ink-3); pointer-events: none; }
       .search-box input {
-        width: 100%; padding: 12px 40px 12px 40px; font: inherit; font-size: 16px;
+        width: 100%; padding: 12px 52px 12px 40px; font: inherit; font-size: 16px;
         background: var(--surface); color: var(--ink);
         border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow);
+        min-height: 48px;
       }
       .search-box input::placeholder { color: var(--ink-3); }
       .search-clear {
-        position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
-        border: 0; background: var(--surface-2); border-radius: 999px; width: 30px; height: 30px;
+        position: absolute; right: 2px; top: 50%; transform: translateY(-50%);
+        border: 0; background: transparent; border-radius: 999px; width: 44px; height: 44px;
         display: none; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-2);
       }
       .search-clear svg { position: static; transform: none; width: 14px; height: 14px; color: inherit; }
@@ -143,8 +157,9 @@
       .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
       .chip {
         border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
-        border-radius: 999px; padding: 7px 13px; font-size: 13.5px; font-weight: 500;
-        cursor: pointer; min-height: 36px; display: inline-flex; align-items: center; gap: 7px;
+        border-radius: 999px; padding: 7px 14px; font-size: 13.5px; font-weight: 500;
+        cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; gap: 7px;
+        white-space: nowrap;
       }
       .chip .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--ink-3); flex: none; }
       .chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
@@ -153,7 +168,8 @@
       .tabs { display: flex; gap: 2px; background: var(--surface-2); border-radius: 11px; padding: 3px; margin: 0 0 14px; }
       .tabs button {
         flex: 1; border: 0; background: none; border-radius: 8px; padding: 9px 4px;
-        font-size: 14px; font-weight: 500; color: var(--ink-2); cursor: pointer; min-height: 40px;
+        font-size: 14px; font-weight: 500; color: var(--ink-2); cursor: pointer; min-height: 44px;
+        white-space: nowrap;
       }
       .tabs button[aria-selected="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; box-shadow: var(--shadow); }
       .results-line { font-size: 13.5px; color: var(--ink-2); margin: 0 2px 12px; min-height: 18px; }
@@ -164,7 +180,7 @@
         background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
         box-shadow: var(--shadow); padding: 16px; display: flex; gap: 14px;
       }
-      .card.archived { opacity: 0.72; }
+      .card.archived { opacity: 1; background: var(--archived-bg); }
       .date-block { flex: none; width: 52px; text-align: center; padding-top: 2px; }
       .date-block .d { font-family: "IBM Plex Mono", monospace; font-size: 24px; font-weight: 600; line-height: 1; }
       .date-block .m { font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-2); margin-top: 3px; }
@@ -180,7 +196,7 @@
         background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line);
       }
       .flag.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
-      .flag.ok { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+      .flag.ok { background: var(--accent-soft); color: var(--accent-strong); border-color: transparent; }
       .card h3 { font-size: 17.5px; line-height: 1.25; margin: 0 0 7px; font-weight: 600; letter-spacing: -0.01em; }
       .meta { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
       .meta .row { display: flex; gap: 8px; font-size: 13.5px; color: var(--ink-2); align-items: baseline; }
@@ -189,17 +205,18 @@
       .card .desc { font-size: 14px; color: var(--ink-2); margin: 0 0 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
       .card-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
       .btn {
-        display: inline-flex; align-items: center; gap: 7px; min-height: 40px;
+        display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px;
         border-radius: 10px; border: 1px solid var(--line); background: var(--surface);
-        padding: 8px 13px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; color: var(--ink);
+        padding: 8px 14px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; color: var(--ink);
+        white-space: nowrap;
       }
       .btn svg { width: 15px; height: 15px; flex: none; }
       .btn:active { background: var(--surface-2); }
       .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
       .btn.primary:active { background: var(--accent-strong); border-color: var(--accent-strong); }
-      .btn.small { min-height: 36px; padding: 6px 11px; font-size: 13.5px; }
+      .btn.small { min-height: 44px; padding: 8px 13px; font-size: 13.5px; }
       .btn[disabled] { opacity: 0.55; cursor: default; }
-      .link-inert { font-size: 13.5px; color: var(--warn); font-weight: 500; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
+      .link-inert { font-size: 13.5px; color: var(--warn); font-weight: 500; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
       .check-note { font-size: 12.5px; color: var(--ink-2); margin-top: 9px; display: none; }
       .check-note.show { display: block; }
       .check-note.bad { color: var(--warn); }
@@ -208,9 +225,10 @@
       .track-wrap { position: relative; }
       .track-btn {
         position: relative; overflow: hidden;
-        display: inline-flex; align-items: center; gap: 7px; min-height: 40px;
+        display: inline-flex; align-items: center; gap: 7px; min-height: 44px;
         border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2);
-        padding: 8px 15px; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--ink);
+        padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--ink);
+        white-space: nowrap;
         -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation;
       }
       .track-btn .fill { position: absolute; inset: 0; width: 0%; background: var(--accent-soft); pointer-events: none; }
@@ -225,7 +243,7 @@
       .track-opts.open { display: flex; }
       .track-opts .hint { width: 100%; font-size: 12px; color: var(--ink-2); margin: 0 2px 2px; }
       .track-opt {
-        flex: 1; min-width: 92px; min-height: 42px; border-radius: 9px; cursor: pointer;
+        flex: 1; min-width: 92px; min-height: 44px; border-radius: 9px; cursor: pointer;
         border: 1px solid var(--line); background: var(--surface); font-weight: 600; font-size: 14px;
         position: relative; overflow: hidden; -webkit-user-select: none; user-select: none; touch-action: manipulation;
       }
@@ -243,6 +261,7 @@
       textarea, input[type="text"], input[type="password"] {
         width: 100%; font: inherit; font-size: 16px; color: var(--ink);
         background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px;
+        min-height: 48px;
       }
       textarea { min-height: 110px; resize: vertical; line-height: 1.45; }
       .char-count { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink-3); text-align: right; margin-top: 5px; }
@@ -265,12 +284,12 @@
       .interest-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
       .interest-chip {
         display: inline-flex; align-items: center; gap: 7px; background: var(--accent-soft);
-        border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 6px 8px 6px 13px;
-        font-size: 13.5px; font-weight: 500; min-height: 34px;
+        border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 0 0 0 13px;
+        font-size: 13.5px; font-weight: 500; min-height: 44px;
       }
       .interest-chip button {
-        border: 0; background: var(--surface); border-radius: 999px; width: 22px; height: 22px;
-        display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-2); font-size: 14px; line-height: 1;
+        border: 0; background: var(--surface); border-radius: 999px; width: 44px; height: 44px;
+        display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-2); font-size: 15px; line-height: 1; flex: none;
       }
       .interest-add { display: flex; gap: 8px; }
       .interest-add input { flex: 1; }
@@ -301,8 +320,8 @@
       .bottomnav-in { max-width: 720px; margin: 0 auto; display: flex; }
       .nav-item {
         flex: 1; border: 0; background: none; cursor: pointer; position: relative;
-        display: flex; flex-direction: column; align-items: center; gap: 3px;
-        padding: 9px 4px 8px; font-size: 11.5px; font-weight: 500; color: var(--ink-3); min-height: 58px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+        padding: 9px 4px 8px; font-size: 11.5px; font-weight: 500; color: var(--ink-3); min-height: 60px;
       }
       .nav-item svg { width: 22px; height: 22px; }
       .nav-item[aria-current="page"] { color: var(--accent); font-weight: 600; }
@@ -313,6 +332,8 @@
         display: none; align-items: center; justify-content: center; padding: 0 5px;
       }
       .nav-badge.show { display: inline-flex; }
+
+      .home-actions .btn { flex: 1 1 auto; }
 
       @media (max-width: 430px) {
         .brand { gap: 8px; }
@@ -339,6 +360,7 @@
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#view-home">Skip to main content</a>
     <header class="topbar">
       <div class="wrap topbar-in">
         <div class="brand">
@@ -358,7 +380,7 @@
 
     <main class="wrap">
       <!-- ============ HOME ============ -->
-      <section class="view" id="view-home" aria-label="Home">
+      <section class="view" id="view-home" aria-label="Home" tabindex="-1">
         <h1 class="page-title">Tech, security &amp; startup events in Singapore</h1>
         <p class="lede">One feed for technology, cybersecurity and entrepreneurship events — conferences, meetups and hackathons, Singapore first.</p>
 
@@ -382,7 +404,7 @@
 
         <h2 class="section-title">Where these events come from</h2>
         <div class="sources-card" id="sources-card">
-          <button class="sources-head" type="button" id="sources-toggle" aria-expanded="false">
+          <button class="sources-head" type="button" id="sources-toggle" aria-expanded="false" aria-controls="sources-body">
             <span class="t">Sources</span>
             <span class="s" id="sources-count"></span>
             <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -392,14 +414,14 @@
 
         <h2 class="section-title">Coming up next</h2>
         <div class="cards" id="home-next"></div>
-        <div class="btn-row">
+        <div class="btn-row home-actions">
           <button class="btn" type="button" data-goto="events">Browse all events</button>
           <button class="btn" type="button" data-goto="add">Add from a message</button>
         </div>
       </section>
 
       <!-- ============ EVENTS ============ -->
-      <section class="view" id="view-events" aria-label="Events">
+      <section class="view" id="view-events" aria-label="Events" tabindex="-1">
         <h1 class="page-title">Events</h1>
         <p class="lede" style="margin-bottom:12px;">Singapore by default. <span class="snapshot-note">Starter list checked 8 Nov 2026 — use Re-check on a card to verify a link.</span></p>
 
@@ -414,17 +436,19 @@
         <div class="chips" id="category-chips" role="group" aria-label="Filter by category"></div>
 
         <div class="tabs" role="tablist" aria-label="Event views">
-          <button type="button" role="tab" data-tab="foryou">For You</button>
-          <button type="button" role="tab" data-tab="upcoming">Upcoming</button>
-          <button type="button" role="tab" data-tab="saved">Saved</button>
-          <button type="button" role="tab" data-tab="tracking">Tracking</button>
+          <button type="button" role="tab" id="tab-foryou" data-tab="foryou" aria-controls="events-panel">For You</button>
+          <button type="button" role="tab" id="tab-upcoming" data-tab="upcoming" aria-controls="events-panel">Upcoming</button>
+          <button type="button" role="tab" id="tab-saved" data-tab="saved" aria-controls="events-panel">Saved</button>
+          <button type="button" role="tab" id="tab-tracking" data-tab="tracking" aria-controls="events-panel">Tracking</button>
         </div>
 
-        <p class="results-line" id="results-line" role="status"></p>
-        <div class="cards" id="events-list"></div>
-        <div id="events-empty"></div>
+        <div id="events-panel" role="tabpanel" aria-labelledby="tab-foryou" tabindex="0">
+          <p class="results-line" id="results-line" role="status"></p>
+          <div class="cards" id="events-list"></div>
+          <div id="events-empty"></div>
+        </div>
 
-        <button class="arch-toggle" type="button" id="arch-toggle" aria-expanded="false">
+        <button class="arch-toggle" type="button" id="arch-toggle" aria-expanded="false" aria-controls="archived-list">
           <span>Archived</span>
           <span class="s" id="arch-count"></span>
           <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
@@ -436,7 +460,7 @@
           <p>Paste a Telegram, WhatsApp or newsletter announcement and EventOS will pull out the event — title, date, venue, price and sign-up link.</p>
           <label class="f-label" for="paste-box">Announcement text</label>
           <textarea id="paste-box" maxlength="8000" placeholder="Paste the announcement here…"></textarea>
-          <div class="char-count"><span id="paste-count">0</span> / 8,000</div>
+          <div class="char-count" aria-hidden="true"><span id="paste-count">0</span> / 8,000</div>
           <div class="btn-row">
             <button class="btn primary" type="button" id="extract-btn">Extract event</button>
           </div>
@@ -445,33 +469,33 @@
       </section>
 
       <!-- ============ CALENDAR ============ -->
-      <section class="view" id="view-calendar" aria-label="My Calendar">
+      <section class="view" id="view-calendar" aria-label="My Calendar" tabindex="-1">
         <h1 class="page-title">My Calendar</h1>
         <p class="lede">Events you&rsquo;ve marked <strong>Going</strong>, in date order.</p>
         <div id="calendar-list"></div>
       </section>
 
       <!-- ============ SETTINGS ============ -->
-      <section class="view" id="view-settings" aria-label="Settings">
+      <section class="view" id="view-settings" aria-label="Settings" tabindex="-1">
         <h1 class="page-title">Settings</h1>
         <p class="lede">Your own Gemini key powers extraction. Everything here stays in this browser, on this device.</p>
 
         <div class="panel" id="key-panel">
           <h2>Your Gemini API key</h2>
           <p>Add-from-a-message sends the pasted announcement straight from your browser to Google&rsquo;s Gemini API using your key. The key is stored only in this browser and is never sent to any EventOS server — there isn&rsquo;t one. Don&rsquo;t have a key? <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Get a free key from Google AI Studio</a> — the free tier needs no card and no billing account.</p>
-          <div class="key-status" id="key-status"><span class="dot"></span><span id="key-status-text">No key saved</span></div>
+          <div class="key-status" id="key-status" role="status"><span class="dot" aria-hidden="true"></span><span id="key-status-text">No key saved</span></div>
           <label class="f-label" for="key-input">Gemini API key</label>
           <input type="password" id="key-input" placeholder="Paste your key…" autocomplete="off" autocapitalize="off" spellcheck="false" />
           <div class="btn-row">
-            <button class="btn" type="button" id="key-toggle">Show</button>
+            <button class="btn" type="button" id="key-toggle" aria-expanded="false" aria-controls="key-input">Show</button>
             <button class="btn primary" type="button" id="key-save">Save key</button>
             <button class="btn" type="button" id="key-test">Test</button>
             <button class="btn" type="button" id="key-delete">Delete</button>
           </div>
           <div class="status-line" id="key-msg" role="status"></div>
-          <div class="usage">
+          <div class="usage" role="status">
             <span id="usage-text">Gemini calls today: 0 / 200</span>
-            <div class="bar"><i id="usage-bar"></i></div>
+            <div class="bar" aria-hidden="true"><i id="usage-bar"></i></div>
             <div class="fineprint">Free-tier guardrails: at most 10 calls a minute and 200 a day; extraction pauses for the day at 160 calls so you stay well inside the free tier.</div>
           </div>
         </div>
@@ -491,18 +515,18 @@
 
     <nav class="bottomnav" aria-label="Main">
       <div class="bottomnav-in">
-        <button class="nav-item" type="button" data-nav="home">
+        <button class="nav-item" type="button" data-nav="home" aria-label="Home">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10.5 9-7.5 9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
           <span>Home</span>
         </button>
-        <button class="nav-item" type="button" data-nav="events">
+        <button class="nav-item" type="button" data-nav="events" aria-label="Events">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg>
           <span>Events</span>
         </button>
-        <button class="nav-item" type="button" data-nav="calendar">
+        <button class="nav-item" type="button" data-nav="calendar" id="nav-calendar" aria-label="My Calendar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9.2 15.8 2 2 3.8-4"/></svg>
           <span>My Calendar</span>
-          <span class="nav-badge" id="going-badge">0</span>
+          <span class="nav-badge" id="going-badge" aria-hidden="true">0</span>
         </button>
       </div>
     </nav>
@@ -830,6 +854,7 @@
 
         var s = parseDate(ev.start);
         var db = el("div", "date-block");
+        db.setAttribute("aria-hidden", "true");
         db.appendChild(el("div", "d", s ? String(s.getDate()) : "–"));
         db.appendChild(el("div", "m", s ? MONTHS[s.getMonth()] : "TBA"));
         var rel = relLabel(ev);
@@ -840,6 +865,7 @@
         var top = el("div", "card-top");
         var cat = el("span", "cat-tag");
         var dot = el("span", "dot");
+        dot.setAttribute("aria-hidden", "true");
         dot.style.background = CAT_COLORS[ev.category] || "var(--ink-3)";
         cat.appendChild(dot);
         cat.appendChild(document.createTextNode(ev.category));
@@ -852,7 +878,14 @@
         if (chk) top.appendChild(el("span", "flag " + (chk.bad ? "warn" : "ok"), chk.kind));
         main.appendChild(top);
 
-        main.appendChild(el("h3", null, ev.title));
+        var titleEl = el("h3", null, ev.title);
+        main.appendChild(titleEl);
+        var srDate = el("span", null, "Date: " + dateLabel(ev) + (rel ? " (" + rel + ")" : ""));
+        srDate.style.position = "absolute";
+        srDate.style.width = "1px"; srDate.style.height = "1px";
+        srDate.style.overflow = "hidden"; srDate.style.clip = "rect(0 0 0 0)";
+        srDate.style.whiteSpace = "nowrap";
+        titleEl.appendChild(srDate);
 
         var meta = el("div", "meta");
         var r1 = el("div", "row");
@@ -886,7 +919,9 @@
         tb.type = "button";
         tb.setAttribute("aria-haspopup", "true");
         tb.setAttribute("aria-expanded", state.openTrackFor === ev.id ? "true" : "false");
-        tb.setAttribute("aria-label", (cur ? "Tracking: " + TRACK_LABELS[cur] + ". " : "") + "Hold to " + (cur ? "change tracking" : "track this event"));
+        tb.setAttribute("aria-controls", "track-opts-" + ev.id);
+        tb.setAttribute("aria-keyshortcuts", "Enter");
+        tb.setAttribute("aria-label", (cur ? "Tracking: " + TRACK_LABELS[cur] + ". " : "") + "Hold to " + (cur ? "change tracking" : "track this event") + ", or press Enter");
         var fill = el("span", "fill"); tb.appendChild(fill);
         var lbl = el("span", "lbl");
         lbl.appendChild(iconSpan(cur && cur === "going" ? ICON.check : ICON.bookmark));
@@ -896,11 +931,16 @@
         tw.appendChild(tb);
 
         var optsBox = el("div", "track-opts" + (state.openTrackFor === ev.id ? " open" : ""));
+        optsBox.id = "track-opts-" + ev.id;
+        optsBox.setAttribute("role", "group");
+        optsBox.setAttribute("aria-label", "Tracking options for " + ev.title);
         optsBox.appendChild(el("p", "hint", "Hold an option (or tap it) to confirm:"));
         ["saved", "interested", "going"].forEach(function (k) {
           var b = el("button", "track-opt");
           b.type = "button";
           b.setAttribute("aria-pressed", cur === k ? "true" : "false");
+          b.setAttribute("aria-label", TRACK_LABELS[k] + " — hold or press Enter to confirm");
+          b.setAttribute("aria-keyshortcuts", "Enter");
           var f2 = el("span", "fill"); b.appendChild(f2);
           var l2 = el("span", "lbl", TRACK_LABELS[k]); b.appendChild(l2);
           attachHold(b, f2, function () { setTrack(ev.id, cur === k ? null : k); });
@@ -909,6 +949,7 @@
         if (cur) {
           var clear = el("button", "track-opt clear", "Clear");
           clear.type = "button";
+          clear.setAttribute("aria-label", "Clear tracking for " + ev.title);
           clear.addEventListener("click", function () { setTrack(ev.id, null); });
           optsBox.appendChild(clear);
         }
@@ -921,6 +962,7 @@
         rc.appendChild(iconSpan(ICON.refresh));
         rc.appendChild(document.createTextNode("Re-check"));
         rc.setAttribute("aria-label", "Re-check whether " + ev.title + " is still live");
+        rc.setAttribute("aria-describedby", "check-note-" + ev.id);
         rc.addEventListener("click", function () { recheckEvent(ev.id, rc); });
         actions.appendChild(rc);
 
@@ -936,6 +978,13 @@
           a.rel = "noopener noreferrer";
           a.appendChild(document.createTextNode("Register"));
           a.appendChild(iconSpan(ICON.ext));
+          var srNewTab = el("span", null, " (opens in new tab)");
+          srNewTab.style.position = "absolute";
+          srNewTab.style.width = "1px"; srNewTab.style.height = "1px";
+          srNewTab.style.overflow = "hidden"; srNewTab.style.clip = "rect(0 0 0 0)";
+          srNewTab.style.whiteSpace = "nowrap";
+          a.appendChild(srNewTab);
+          a.setAttribute("aria-label", "Register for " + ev.title + " (opens in new tab)");
           actions.appendChild(a);
         } else if (ev.url) {
           actions.appendChild(el("span", "link-inert", "Link blocked — unsafe address"));
@@ -944,6 +993,7 @@
 
         var note = el("p", "check-note" + (chk && chk.bad ? " bad" : "") + (chk ? " show" : ""), chk ? chk.text : "");
         note.id = "check-note-" + ev.id;
+        note.setAttribute("role", "status");
         main.appendChild(note);
 
         card.appendChild(main);
@@ -969,8 +1019,14 @@
         btn.addEventListener("pointerup", reset);
         btn.addEventListener("pointerleave", reset);
         btn.addEventListener("pointercancel", reset);
+        btn.addEventListener("contextmenu", function (e) { e.preventDefault(); });
         btn.addEventListener("click", function () { if (!fired) action(); fired = false; });
-        btn.addEventListener("keydown", function (e) { if (e.key === "Escape") reset(); });
+        btn.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") { reset(); return; }
+          // Keyboard alternative to holding: Enter fires immediately. Space
+          // keeps its native button behaviour (click on keyup) — no hold needed.
+          if (e.key === "Enter") { e.preventDefault(); reset(); action(); }
+        });
       }
 
       function toggleTrackOptions(id) {
@@ -1161,10 +1217,19 @@
         var badge = $("going-badge");
         badge.textContent = String(goingCount);
         badge.classList.toggle("show", goingCount > 0);
+        $("nav-calendar").setAttribute("aria-label", "My Calendar" + (goingCount > 0 ? ", " + goingCount + " event" + (goingCount === 1 ? "" : "s") + " you're going to" : ""));
       }
 
       function renderAll() { renderNav(); renderHome(); renderEvents(); renderCalendar(); }
-      function showView(v) { state.view = v; renderAll(); window.scrollTo(0, 0); }
+      function showView(v, focusView) {
+        state.view = v;
+        renderAll();
+        window.scrollTo(0, 0);
+        if (focusView) {
+          var sec = $("view-" + v);
+          if (sec) sec.focus({ preventScroll: true });
+        }
+      }
 
       /* ================= Gemini key (bring your own key) ================= */
       // The key is stored only in this browser's localStorage and is sent only
@@ -1289,7 +1354,7 @@
           m.appendChild(document.createTextNode("A Gemini key is needed to extract events from messages. Add yours in Settings — it's free and takes a minute. "));
           var b = el("button", "btn small", "Open Settings");
           b.type = "button";
-          b.addEventListener("click", function () { showView("settings"); });
+          b.addEventListener("click", function () { showView("settings", true); });
           m.appendChild(b);
           return;
         }
@@ -1417,18 +1482,28 @@
       }
 
       /* ================= Wiring ================= */
+      // Tabs follow the ARIA tab pattern: roving tabindex, arrow keys move
+      // between tabs, Home/End jump to the ends, selection follows focus.
+      function syncTabs() {
+        document.querySelectorAll(".tabs [data-tab]").forEach(function (x) {
+          var on = x.getAttribute("data-tab") === state.tab;
+          x.setAttribute("aria-selected", on ? "true" : "false");
+          x.tabIndex = on ? 0 : -1;
+          if (on) $("events-panel").setAttribute("aria-labelledby", x.id);
+        });
+      }
       function init() {
         // Bottom nav + goto buttons
         document.querySelectorAll(".nav-item").forEach(function (b) {
-          b.addEventListener("click", function () { showView(b.getAttribute("data-nav")); });
+          b.addEventListener("click", function () { showView(b.getAttribute("data-nav"), true); });
         });
-        $("settings-btn").addEventListener("click", function () { showView("settings"); });
+        $("settings-btn").addEventListener("click", function () { showView("settings", true); });
         document.querySelectorAll("[data-goto]").forEach(function (b) {
           b.addEventListener("click", function () {
             var g = b.getAttribute("data-goto");
-            if (g === "saved") { state.tab = "saved"; showView("events"); }
-            else if (g === "add") { showView("events"); var p = $("add-panel"); if (p) p.scrollIntoView({ behavior: "smooth", block: "center" }); }
-            else showView(g);
+            if (g === "saved") { state.tab = "saved"; syncTabs(); showView("events", true); }
+            else if (g === "add") { showView("events", true); var p = $("add-panel"); if (p) p.scrollIntoView({ behavior: "smooth", block: "center" }); }
+            else showView(g, true);
           });
         });
 
@@ -1456,16 +1531,26 @@
         });
 
         // Tabs
-        document.querySelectorAll(".tabs [data-tab]").forEach(function (b) {
-          b.setAttribute("aria-selected", b.getAttribute("data-tab") === state.tab ? "true" : "false");
-          b.addEventListener("click", function () {
-            state.tab = b.getAttribute("data-tab");
-            document.querySelectorAll(".tabs [data-tab]").forEach(function (x) {
-              x.setAttribute("aria-selected", x === b ? "true" : "false");
-            });
-            renderEvents();
+        var tabBtns = Array.prototype.slice.call(document.querySelectorAll(".tabs [data-tab]"));
+        function selectTab(b, moveFocus) {
+          state.tab = b.getAttribute("data-tab");
+          syncTabs();
+          if (moveFocus) b.focus();
+          renderEvents();
+        }
+        tabBtns.forEach(function (b) {
+          b.addEventListener("click", function () { selectTab(b, false); });
+          b.addEventListener("keydown", function (e) {
+            var i = tabBtns.indexOf(b);
+            var n = null;
+            if (e.key === "ArrowRight") n = tabBtns[(i + 1) % tabBtns.length];
+            else if (e.key === "ArrowLeft") n = tabBtns[(i - 1 + tabBtns.length) % tabBtns.length];
+            else if (e.key === "Home") n = tabBtns[0];
+            else if (e.key === "End") n = tabBtns[tabBtns.length - 1];
+            if (n) { e.preventDefault(); selectTab(n, true); }
           });
         });
+        syncTabs();
 
         // Search: sanitised as typed, plain substring match only
         var si = $("search-input");
@@ -1502,6 +1587,7 @@
           var show = inp.type === "password";
           inp.type = show ? "text" : "password";
           this.textContent = show ? "Hide" : "Show";
+          this.setAttribute("aria-expanded", show ? "true" : "false");
         });
         $("key-save").addEventListener("click", function () {
           var v = $("key-input").value.trim();
@@ -1510,6 +1596,7 @@
           $("key-input").value = "";
           $("key-input").type = "password";
           $("key-toggle").textContent = "Show";
+          $("key-toggle").setAttribute("aria-expanded", "false");
           renderKeyStatus();
           keyMsg("Key saved in this browser. Tap Test to check it against Google.", "ok");
         });
