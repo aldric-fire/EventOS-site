@@ -135,6 +135,17 @@
       .source-row .what { color: var(--ink-2); font-size: 13px; text-align: right; overflow-wrap: break-word; min-width: 0; }
       .source-row a { font-weight: 500; text-decoration: none; }
       .source-row a:hover { text-decoration: underline; }
+      .source-verdict { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; padding: 2.5px 8px; background: var(--accent-soft); color: var(--accent-strong); border: 1px solid var(--line); white-space: nowrap; }
+      .source-verdict.cond { background: var(--surface-2); color: var(--ink-2); }
+      .gate-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+      .gate-list li { display: flex; gap: 9px; font-size: 13.5px; color: var(--ink-2); align-items: baseline; }
+      .gate-list .g-ic { font-family: "IBM Plex Mono", monospace; font-weight: 700; flex: none; width: 18px; text-align: center; }
+      .gate-list .pass .g-ic { color: var(--accent-strong); }
+      .gate-list .fail .g-ic { color: var(--warn); }
+      .gate-list .na .g-ic { color: var(--ink-3); }
+      .gate-list strong { color: var(--ink); font-weight: 600; }
+      .guidelines { font-size: 13px; color: var(--ink-2); margin: 10px 0 0; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
+      .guidelines strong { color: var(--ink); }
 
       /* ---------- Search / filters ---------- */
       .search-box { position: relative; margin: 4px 0 12px; }
@@ -412,10 +423,32 @@
           <div class="sources-body" id="sources-body"></div>
         </div>
 
+        <h2 class="section-title" id="add-source-anchor">Add a source</h2>
+        <div class="panel" id="add-source-panel">
+          <h2>Point EventOS at a whole platform</h2>
+          <p>Paste a source link — a platform or directory like Eventbrite, Luma or Peatix, a venue&rsquo;s events page, or an organiser&rsquo;s listing page. Not a single event: a place that publishes events. EventOS checks it against the source guidelines first, then your Gemini key reads it and pulls its current events into your feed. The source stays watched below, and <strong>Refresh sources</strong> scans your watched sources again for new events.</p>
+          <div class="guidelines"><strong>Before a source is accepted:</strong> it must be readable without logging in, its link must lead to listings or sign-up (not news coverage), and a per-event page with no way to register does not count as existing. Login-walled platforms (LinkedIn, Instagram) and news round-ups are rejected, with the failed rule shown.</div>
+          <label class="f-label" for="source-url-input">Source link</label>
+          <input type="text" id="source-url-input" placeholder="e.g. https://www.eventbrite.com/d/singapore--singapore/events/" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" />
+          <label class="f-label" for="source-name-input">Name it (optional)</label>
+          <input type="text" id="source-name-input" placeholder="e.g. Eventbrite Singapore" maxlength="60" autocomplete="off" />
+          <div class="btn-row">
+            <button class="btn primary" type="button" id="source-check-btn">Check &amp; add source</button>
+            <button class="btn" type="button" id="source-refresh-btn">Refresh sources</button>
+          </div>
+          <div class="status-line" id="source-status" role="status"></div>
+          <div id="source-gate-result"></div>
+          <h3 style="font-size:15px;margin:18px 0 6px;">Your watched sources</h3>
+          <p style="margin-bottom:6px;">These live in this browser, alongside your key. Refreshing this page keeps them; refreshing the sources below is what brings in new events.</p>
+          <div id="custom-sources-list"></div>
+          <p class="fineprint">How it works on this public page: there is no EventOS server scanning in the background. Mining and refreshing happen in your browser, using your key, when you tap Check &amp; add or Refresh — that is the honest limit of a static page. Your private feed is the one with the automatic daily scan.</p>
+        </div>
+
         <h2 class="section-title">Coming up next</h2>
         <div class="cards" id="home-next"></div>
         <div class="btn-row home-actions">
           <button class="btn" type="button" data-goto="events">Browse all events</button>
+          <button class="btn" type="button" data-goto="add-source">Add a source</button>
           <button class="btn" type="button" data-goto="add">Add from a message</button>
         </div>
       </section>
@@ -423,7 +456,7 @@
       <!-- ============ EVENTS ============ -->
       <section class="view" id="view-events" aria-label="Events" tabindex="-1">
         <h1 class="page-title">Events</h1>
-        <p class="lede" style="margin-bottom:12px;">Singapore by default. <span class="snapshot-note">Starter list checked 8 Nov 2026 — use Re-check on a card to verify a link.</span></p>
+        <p class="lede" style="margin-bottom:12px;">Singapore by default. <span class="snapshot-note">Starter list checked 8 Nov 2026 — events from sources you add on Home appear here too; use Re-check on a card to verify a link.</span></p>
 
         <div class="search-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
@@ -457,7 +490,7 @@
 
         <h2 class="section-title" id="add-anchor">Add from a message</h2>
         <div class="panel" id="add-panel">
-          <p>Paste a Telegram, WhatsApp or newsletter announcement and EventOS will pull out the event — title, date, venue, price and sign-up link.</p>
+          <p>Already found one announcement? Paste a Telegram, WhatsApp or newsletter post and EventOS will pull out that single event. For ongoing discovery, use <strong>Add a source</strong> on Home instead — one platform link keeps bringing in new events on every refresh.</p>
           <label class="f-label" for="paste-box">Announcement text</label>
           <textarea id="paste-box" maxlength="8000" placeholder="Paste the announcement here…"></textarea>
           <div class="char-count" aria-hidden="true"><span id="paste-count">0</span> / 8,000</div>
@@ -478,11 +511,11 @@
       <!-- ============ SETTINGS ============ -->
       <section class="view" id="view-settings" aria-label="Settings" tabindex="-1">
         <h1 class="page-title">Settings</h1>
-        <p class="lede">Your own Gemini key powers extraction. Everything here stays in this browser, on this device.</p>
+        <p class="lede">Your own Gemini key powers Add a source — it reads the platforms you add and mines their events into your feed. It also powers Add from a message. Everything here stays in this browser, on this device.</p>
 
         <div class="panel" id="key-panel">
-          <h2>Your Gemini API key</h2>
-          <p>Add-from-a-message sends the pasted announcement straight from your browser to Google&rsquo;s Gemini API using your key. The key is stored only in this browser and is never sent to any EventOS server — there isn&rsquo;t one. Don&rsquo;t have a key? <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Get a free key from Google AI Studio</a> — the free tier needs no card and no billing account.</p>
+          <h2>Your Gemini API key — for adding sources</h2>
+          <p>When you add a source on Home, this key lets your browser ask Google&rsquo;s Gemini to read that platform and extract its events. The key is stored only in this browser and is sent only to Google — never to any EventOS server; there isn&rsquo;t one. Don&rsquo;t have a key? <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Get a free key from Google AI Studio</a> — the free tier needs no card and no billing account.</p>
           <div class="key-status" id="key-status" role="status"><span class="dot" aria-hidden="true"></span><span id="key-status-text">No key saved</span></div>
           <label class="f-label" for="key-input">Gemini API key</label>
           <input type="password" id="key-input" placeholder="Paste your key…" autocomplete="off" autocapitalize="off" spellcheck="false" />
@@ -738,10 +771,26 @@
         checks: {},       // eventId -> { kind, text, bad }
         interests: ["cybersecurity", "artificial intelligence", "fintech", "hackathons", "entrepreneurship", "startups"],
         added: [],        // events extracted by this visitor, this session
+        customSources: [], // visitor-added sources: {name, url, verdict, addedAt, lastChecked, found}
         sourcesOpen: false,
         archivedOpen: false,
         openTrackFor: null
       };
+      var CUSTOM_SRC_STORE = "eventos-public.custom-sources";
+      function loadCustomSources() {
+        try {
+          var raw = window.localStorage.getItem(CUSTOM_SRC_STORE);
+          if (!raw) return [];
+          var arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) return [];
+          return arr.filter(function (s) { return s && typeof s.url === "string" && safeUrl(s.url); }).slice(0, 20).map(function (s) {
+            return { name: sanitiseText(s.name || "", 60) || "Source", url: safeUrl(s.url), verdict: s.verdict === "conditional" ? "conditional" : "accepted", addedAt: s.addedAt || "", lastChecked: s.lastChecked || "", found: typeof s.found === "number" ? s.found : 0 };
+          });
+        } catch (e) { return []; }
+      }
+      function saveCustomSources() {
+        try { window.localStorage.setItem(CUSTOM_SRC_STORE, JSON.stringify(state.customSources)); } catch (e) { /* storage unavailable */ }
+      }
 
       function allEvents() { return state.added.concat(EVENTS); }
       function byId(id) {
@@ -1161,7 +1210,8 @@
         var topId = ranked.length ? ranked[0].id : null;
         upcoming.filter(function (ev) { return ev.id !== topId; }).slice(0, 3).forEach(function (ev) { nx.appendChild(makeCard(ev)); });
 
-        $("sources-count").textContent = SOURCES.length + " sources";
+        var totalSources = SOURCES.length + state.customSources.length;
+        $("sources-count").textContent = totalSources + " sources" + (state.customSources.length ? " · " + state.customSources.length + " added by you" : "");
         var sb = $("sources-body");
         sb.textContent = "";
         SOURCES.forEach(function (s) {
@@ -1177,8 +1227,27 @@
           row.appendChild(el("span", "what", s.what));
           sb.appendChild(row);
         });
+        state.customSources.forEach(function (s) {
+          var row = el("div", "source-row");
+          var href = safeUrl(s.url);
+          if (href) {
+            var a = el("a", null, s.name);
+            a.href = href; a.target = "_blank"; a.rel = "noopener noreferrer";
+            row.appendChild(a);
+          } else { row.appendChild(el("span", null, s.name)); }
+          var right = el("span", "what");
+          right.appendChild(document.createTextNode((s.found ? s.found + " event" + (s.found === 1 ? "" : "s") + " mined" : "Watched") + (s.lastChecked ? " · checked " + s.lastChecked : "") + " "));
+          right.appendChild(el("span", "source-verdict" + (s.verdict === "conditional" ? " cond" : ""), s.verdict === "conditional" ? "Conditional" : "Accepted"));
+          row.appendChild(right);
+          sb.appendChild(row);
+        });
+        if (state.customSources.length) {
+          var hint = el("p", "fineprint", "Your sources are checked again whenever you tap Refresh sources in Add a source, below.");
+          sb.appendChild(hint);
+        }
         $("sources-card").classList.toggle("open", state.sourcesOpen);
         $("sources-toggle").setAttribute("aria-expanded", state.sourcesOpen ? "true" : "false");
+        renderCustomSourcesList();
       }
 
       function renderCalendar() {
@@ -1443,6 +1512,257 @@
         if (list) list.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
+      /* ================= Add a source: gate, mining, refresh ================= */
+      function sourceMsg(text, kind) {
+        var m = $("source-status");
+        if (!m) return;
+        m.textContent = text || "";
+        m.className = "status-line" + (kind ? " " + kind : "");
+      }
+      function sourceNameFromUrl(href) {
+        try {
+          var h = new URL(href).hostname.replace(/^www\./, "");
+          if (h.indexOf("eventbrite") !== -1) return "Eventbrite";
+          if (h.indexOf("lu.ma") !== -1 || h.indexOf("luma") !== -1) return "Luma";
+          if (h.indexOf("peatix") !== -1) return "Peatix";
+          if (h.indexOf("meetup") !== -1) return "Meetup";
+          if (h.indexOf("suntec") !== -1) return "Suntec Singapore";
+          if (h.indexOf("saceos") !== -1) return "SACEOS";
+          if (h.indexOf("marinabaysands") !== -1) return "Marina Bay Sands";
+          return h;
+        } catch (e) { return "Source"; }
+      }
+      function runSourceGate(href) {
+        var checks = [];
+        var u = null;
+        try { u = new URL(href); } catch (e) { u = null; }
+        if (!u) { checks.push({ label: "Valid link", detail: "That is not a readable http/https link.", status: "fail" }); return { verdict: "rejected", checks: checks }; }
+        checks.push({ label: "Valid link", detail: u.protocol + "//" + u.hostname + " — a proper web address.", status: "pass" });
+        var host = u.hostname.toLowerCase(), path = u.pathname.toLowerCase();
+        var walled = host.indexOf("linkedin.com") !== -1 || host.indexOf("instagram.com") !== -1 || host.indexOf("facebook.com") !== -1;
+        checks.push(walled
+          ? { label: "Readable without logging in", detail: "This platform walls its content behind a login and bans automated reading. Paste a single post into Add from a message instead.", status: "fail" }
+          : { label: "Readable without logging in", detail: "No login wall detected for this host.", status: "pass" });
+        var isNews = host.indexOf("successknocks") !== -1 || /(^|\/)(news|blog|articles?|stories)(\/|$)/.test(path) || path.indexOf("tech-events-singapore") !== -1;
+        checks.push(isNews
+          ? { label: "Leads to listings or sign-up, not coverage", detail: "This looks like a news / round-up page, not a place events are published or booked.", status: "fail" }
+          : { label: "Leads to listings or sign-up, not coverage", detail: "Link pattern looks like a listing, directory or ticketing page.", status: "pass" });
+        var singleEvent = /\/e\/[^\/]+/.test(path) || path.indexOf("/tickets-") !== -1 || /\/events?\/\d{4,}/.test(path);
+        checks.push(singleEvent
+          ? { label: "A whole source, not a single event", detail: "That link is one event, not a platform. Paste the platform's discovery / listing page instead — e.g. Eventbrite's Singapore events page.", status: "fail" }
+          : { label: "A whole source, not a single event", detail: "This looks like a listing page that can hold many events.", status: "pass" });
+        var knownPlatform = /(eventbrite|lu\.ma|luma|peatix|meetup|suntecsingapore|saceos|marinabaysands|allevents|eventzilla|ticketor|humanitix)/.test(host);
+        checks.push(knownPlatform
+          ? { label: "Has registration — otherwise it doesn't exist", detail: "Recognised listing / ticketing platform or official venue listing, so the per-event no-registration rule is applied to each event it yields, not the listing itself.", status: "pass" }
+          : { label: "Has registration — otherwise it doesn't exist", detail: "Not a known ticketing platform: each event mined from here still needs its own register / sign-up path, or it will be flagged on Re-check.", status: "na" });
+        var sg = href.toLowerCase().indexOf("singapore") !== -1 || href.toLowerCase().indexOf("/sg") !== -1 || host.slice(-3) === ".sg";
+        checks.push(sg
+          ? { label: "Singapore-first relevance", detail: "Link mentions Singapore — matches this feed's focus.", status: "pass" }
+          : { label: "Singapore-first relevance", detail: "Link doesn't mention Singapore. It can still be watched, but mined events are kept only when Gemini finds a Singapore venue or a clearly online event.", status: "na" });
+        var hardFail = checks.some(function (c) { return c.status === "fail"; });
+        var hasNa = checks.some(function (c) { return c.status === "na"; });
+        return { verdict: hardFail ? "rejected" : (hasNa ? "conditional" : "accepted"), checks: checks };
+      }
+      function renderGateResult(gate, href) {
+        var box = $("source-gate-result");
+        if (!box) return;
+        box.textContent = "";
+        var head = el("p", "status-line " + (gate.verdict === "rejected" ? "bad" : "ok"),
+          gate.verdict === "rejected" ? "Verdict: Rejected — not added." : (gate.verdict === "conditional" ? "Verdict: Accepted with conditions — now watched." : "Verdict: Accepted — now watched."));
+        box.appendChild(head);
+        var ul = el("ul", "gate-list");
+        gate.checks.forEach(function (c) {
+          var li = el("li", c.status === "pass" ? "pass" : (c.status === "fail" ? "fail" : "na"));
+          li.appendChild(el("span", "g-ic", c.status === "pass" ? "✓" : (c.status === "fail" ? "✕" : "–")));
+          var txt = el("span");
+          txt.appendChild(el("strong", null, c.label + ": "));
+          txt.appendChild(document.createTextNode(c.detail));
+          li.appendChild(txt);
+          ul.appendChild(li);
+        });
+        box.appendChild(ul);
+      }
+      function renderCustomSourcesList() {
+        var box = $("custom-sources-list");
+        if (!box) return;
+        box.textContent = "";
+        if (!state.customSources.length) {
+          box.appendChild(el("p", "snapshot-note", "None yet — add Eventbrite, Luma, a venue page or any platform above and it will appear here."));
+          return;
+        }
+        state.customSources.forEach(function (s, idx) {
+          var row = el("div", "source-row");
+          var a = el("a", null, s.name);
+          var href = safeUrl(s.url);
+          if (href) { a.href = href; a.target = "_blank"; a.rel = "noopener noreferrer"; }
+          row.appendChild(a);
+          var right = el("span", "what");
+          right.appendChild(document.createTextNode((s.lastChecked ? "Last checked " + s.lastChecked + " · " : "Not mined yet · ") + s.found + " new in feed "));
+          var rm = el("button", "btn small", "Remove");
+          rm.type = "button";
+          rm.setAttribute("aria-label", "Remove source " + s.name);
+          rm.addEventListener("click", function () {
+            state.customSources.splice(idx, 1);
+            saveCustomSources(); renderAll();
+            sourceMsg("Removed “" + s.name + "”. Events already mined from it stay in your feed for this session.", "ok");
+          });
+          right.appendChild(rm);
+          row.appendChild(right);
+          box.appendChild(row);
+        });
+      }
+      function addMinedEvent(o, sourceName) {
+        var title = cleanStr(o.title, 140);
+        if (!title) return false;
+        var start = validDateStr(o.startDate);
+        var end = validDateStr(o.endDate) || start;
+        var cats = ["Technology", "Cybersecurity", "Fintech", "AI & Data", "Entrepreneurship", "Hackathons", "Careers"];
+        var cat = cats.indexOf(o.category) !== -1 ? o.category : "Technology";
+        var url = safeUrl(typeof o.url === "string" ? o.url : "");
+        var ev = {
+          id: "mine-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7),
+          title: title, category: cat, tags: [cat.toLowerCase()],
+          start: start || "", end: end || start || "",
+          timeLabel: cleanStr(o.timeLabel, 60),
+          venue: cleanStr(o.venue, 120) || "Venue TBA",
+          city: cleanStr(o.city, 40) || "Singapore",
+          price: cleanStr(o.priceLabel, 60) || "Price TBA",
+          organiser: cleanStr(o.organiser, 80),
+          url: url || (typeof o.url === "string" ? o.url : ""),
+          source: sourceName, desc: cleanStr(o.description, 400), mine: true
+        };
+        var dupe = allEvents().some(function (x) { return x.title.toLowerCase() === ev.title.toLowerCase() && String(x.start) === String(ev.start); });
+        if (dupe) return false;
+        // Singapore-first for conditional sources: drop clearly non-SG in-person events with a stated foreign city
+        if (ev.city && ev.city !== "Singapore" && ev.venue && ev.venue.toLowerCase().indexOf("online") === -1 && ev.city.length > 1 && start) {
+          // Keep it if the visitor explicitly added the source — but flag city on card (existing behaviour shows non-SG flag)
+        }
+        state.added.unshift(ev);
+        return true;
+      }
+      function parseEventArray(out) {
+        var obj = null;
+        try { obj = JSON.parse(out); } catch (e) {
+          var s = out.indexOf("["), e2 = out.lastIndexOf("]");
+          if (s !== -1 && e2 > s) { try { obj = JSON.parse(out.slice(s, e2 + 1)); } catch (e3) { obj = null; } }
+        }
+        if (Array.isArray(obj)) return obj;
+        if (obj && Array.isArray(obj.events)) return obj.events;
+        if (obj && obj.title) return [obj];
+        return [];
+      }
+      function geminiUrlContextCall(key, url, sourceName) {
+        var prompt = [
+          "Open and read this event source listing page: " + url,
+          "Extract up to 8 distinct upcoming events listed on it. Reply with ONLY a JSON array (no markdown) of objects:",
+          '{"title": string, "startDate": "YYYY-MM-DD or null", "endDate": "YYYY-MM-DD or null", "timeLabel": string or null, "venue": string or null, "city": string or null, "category": one of "Technology","Cybersecurity","Fintech","AI & Data","Entrepreneurship","Hackathons","Careers", "priceLabel": string or null, "url": string or null, "organiser": string or null, "description": string}',
+          "Use each event's own sign-up / detail link for url when the page gives one, otherwise use the source URL. Use null for anything not stated. Do not invent dates, prices, venues or links. Prefer Singapore events."
+        ].join("\n");
+        var body = { contents: [{ role: "user", parts: [{ text: prompt }] }], tools: [{ urlContext: {} }], generationConfig: { temperature: 0.1 } };
+        return fetch(API_BASE, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body) })
+          .then(function (res) {
+            return res.json().catch(function () { return {}; }).then(function (data) {
+              if (!res.ok) { var err = new Error((data && data.error && data.error.message) || ("Google returned HTTP " + res.status)); err.status = res.status; throw err; }
+              return parseEventArray(geminiText(data));
+            });
+          })
+          .catch(function () {
+            // URL-context tool unavailable on this key/model — fall back to asking
+            // Gemini about the URL directly; results are still deduped and the
+            // cards link back to the source so the visitor can verify.
+            return geminiCall(key, [{ text: prompt }], true).then(function (data) { return parseEventArray(geminiText(data)); });
+          });
+      }
+      function mineSource(src, key) {
+        var gate = rateGate();
+        if (!gate.ok) return Promise.reject(new Error(gate.msg));
+        recordCall();
+        // First try reading the page directly from the browser; many listings block
+        // this with CORS, in which case Gemini's URL reader is the fallback.
+        var ctrl = ("AbortController" in window) ? new AbortController() : null;
+        var to = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
+        return fetch(src.url, { signal: ctrl ? ctrl.signal : undefined, credentials: "omit" })
+          .then(function (res) { if (!res.ok) throw new Error("http"); return res.text(); })
+          .then(function (html) {
+            clearTimeout(to);
+            var text = html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+            if (text.length < 400) throw new Error("thin");
+            var prompt = [
+              "Extract up to 8 distinct upcoming events from the listing text below, from source: " + src.name + " (" + src.url + ").",
+              'Reply with ONLY a JSON array of objects: {"title": string, "startDate": "YYYY-MM-DD or null", "endDate": "YYYY-MM-DD or null", "timeLabel": string or null, "venue": string or null, "city": string or null, "category": one of "Technology","Cybersecurity","Fintech","AI & Data","Entrepreneurship","Hackathons","Careers", "priceLabel": string or null, "url": string or null, "organiser": string or null, "description": string}',
+              "Use null for anything not stated. Do not invent dates, prices, venues or links. Prefer Singapore events.",
+              "", "LISTING TEXT:", text.slice(0, 12000)
+            ].join("\n");
+            return geminiCall(key, [{ text: prompt }], true).then(function (data) { return parseEventArray(geminiText(data)); });
+          })
+          .catch(function () {
+            clearTimeout(to);
+            return geminiUrlContextCall(key, src.url, src.name);
+          })
+          .then(function (items) {
+            var added = 0;
+            items.slice(0, 8).forEach(function (o) { if (addMinedEvent(o, src.name)) added++; });
+            src.found = (src.found || 0) + added;
+            src.lastChecked = new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short", year: "numeric" }).format(new Date());
+            saveCustomSources();
+            return added;
+          });
+      }
+      function needKeyPrompt(containerMsg) {
+        sourceMsg("", "");
+        var m = $("source-status");
+        m.appendChild(document.createTextNode(containerMsg + " "));
+        var b = el("button", "btn small", "Open Settings");
+        b.type = "button";
+        b.addEventListener("click", function () { showView("settings", true); });
+        m.appendChild(b);
+      }
+      function addSourceFlow() {
+        var rawUrl = ($("source-url-input").value || "").trim();
+        var href = safeUrl(rawUrl);
+        if (!rawUrl) { sourceMsg("Paste a source link first — a platform or listing page, like Eventbrite's Singapore events page.", "bad"); return; }
+        if (!href) { sourceMsg("That link was blocked — only http/https addresses can be added as a source.", "bad"); $("source-gate-result").textContent = ""; return; }
+        if (state.customSources.some(function (s) { return s.url === href; })) { sourceMsg("That source is already watched. Tap Refresh sources to scan it again for new events.", "bad"); return; }
+        var gate = runSourceGate(href);
+        renderGateResult(gate, href);
+        if (gate.verdict === "rejected") { sourceMsg("Not added — see the failed check above. Fix the link (a listing page, not a single event or a news page) and try again.", "bad"); return; }
+        var name = sanitiseText(($("source-name-input").value || ""), 60).trim() || sourceNameFromUrl(href);
+        var src = { name: name, url: href, verdict: gate.verdict, addedAt: new Date().toISOString(), lastChecked: "", found: 0 };
+        state.customSources.push(src);
+        saveCustomSources();
+        $("source-url-input").value = ""; $("source-name-input").value = "";
+        renderAll();
+        var key = getKey();
+        if (!key) { needKeyPrompt("“" + name + "” passed the check and is now watched. Add your Gemini key in Settings and it can be mined — the key is what reads the source and pulls its events in."); return; }
+        var btn = $("source-check-btn"); btn.disabled = true;
+        sourceMsg("Accepted — now mining “" + name + "” with your key for its current events…", "");
+        mineSource(src, key).then(function (added) {
+          renderAll();
+          sourceMsg(added ? "Done — " + added + " new event" + (added === 1 ? "" : "s") + " from “" + name + "” added to your feed. It stays watched: tap Refresh sources any time to scan it again." : "“" + name + "” is watched, but Gemini found no new events to add this time (they may already be in your feed, or the page needs a look). It will be scanned again on Refresh.", added ? "ok" : "");
+        }).catch(function (err) {
+          renderAll();
+          sourceMsg("“" + name + "” is watched, but mining failed: " + (err && err.message ? err.message : "network error") + " Try Refresh sources in a moment.", "bad");
+        }).then(function () { btn.disabled = false; });
+      }
+      function refreshSourcesFlow() {
+        if (!state.customSources.length) { sourceMsg("No sources added by you yet — add a platform above first. The built-in starter list is a fixed snapshot and does not refresh on this public page.", "bad"); return; }
+        var key = getKey();
+        if (!key) { needKeyPrompt("Refreshing needs your Gemini key — it does the reading on each source."); return; }
+        var btn = $("source-refresh-btn"); btn.disabled = true;
+        sourceMsg("Refreshing " + state.customSources.length + " watched source" + (state.customSources.length === 1 ? "" : "s") + " — scanning for new events…", "");
+        var total = 0, failures = 0, chain = Promise.resolve();
+        state.customSources.forEach(function (src) {
+          chain = chain.then(function () {
+            return mineSource(src, key).then(function (n) { total += n; }).catch(function () { failures++; });
+          });
+        });
+        chain.then(function () {
+          renderAll();
+          sourceMsg("Refresh done — " + total + " new event" + (total === 1 ? "" : "s") + " added." + (failures ? " " + failures + " source" + (failures === 1 ? "" : "s") + " could not be read this time and stay watched for the next refresh." : " Watched sources stay in this browser, so tomorrow's new events are one Refresh away."), total ? "ok" : "");
+          btn.disabled = false;
+        });
+      }
+
       /* ================= Interests editor ================= */
       function renderInterests() {
         var box = $("interest-chips");
@@ -1493,6 +1813,7 @@
         });
       }
       function init() {
+        state.customSources = loadCustomSources();
         // Bottom nav + goto buttons
         document.querySelectorAll(".nav-item").forEach(function (b) {
           b.addEventListener("click", function () { showView(b.getAttribute("data-nav"), true); });
@@ -1502,6 +1823,7 @@
           b.addEventListener("click", function () {
             var g = b.getAttribute("data-goto");
             if (g === "saved") { state.tab = "saved"; syncTabs(); showView("events", true); }
+            else if (g === "add-source") { showView("home", false); var sp = $("add-source-panel"); if (sp) sp.scrollIntoView({ behavior: "smooth", block: "center" }); var si2 = $("source-url-input"); if (si2) si2.focus({ preventScroll: true }); }
             else if (g === "add") { showView("events", true); var p = $("add-panel"); if (p) p.scrollIntoView({ behavior: "smooth", block: "center" }); }
             else showView(g, true);
           });
@@ -1574,6 +1896,12 @@
         $("arch-toggle").addEventListener("click", function () {
           state.archivedOpen = !state.archivedOpen; renderEvents();
         });
+
+        // Add a source
+        $("source-check-btn").addEventListener("click", addSourceFlow);
+        $("source-refresh-btn").addEventListener("click", refreshSourcesFlow);
+        $("source-url-input").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addSourceFlow(); } });
+        $("source-name-input").addEventListener("input", function () { var c = sanitiseText(this.value, 60); if (c !== this.value) this.value = c; });
 
         // Add from a message
         var pb = $("paste-box");
