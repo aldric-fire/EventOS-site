@@ -1,0 +1,1570 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>EventOS Public</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f4f3ee;
+        --surface: #ffffff;
+        --surface-2: #eceade;
+        --ink: #182119;
+        --ink-2: #59645b;
+        --ink-3: #8a938a;
+        --line: #dddacd;
+        --accent: #0c6b4f;
+        --accent-strong: #09573f;
+        --accent-soft: #e2efe8;
+        --warn: #a03a24;
+        --warn-soft: #f9e9e3;
+        --ok: #0c6b4f;
+        --shadow: 0 1px 2px rgba(24, 33, 25, 0.05), 0 8px 24px -18px rgba(24, 33, 25, 0.35);
+        --nav-bg: rgba(255, 255, 255, 0.92);
+        --cat-cyber: #b3402a;
+        --cat-tech: #2e6482;
+        --cat-fintech: #7a5c14;
+        --cat-ai: #177e70;
+        --cat-ent: #b45f06;
+        --cat-hack: #0c6b4f;
+        --cat-careers: #5a665e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f130f;
+          --surface: #171c17;
+          --surface-2: #20261f;
+          --ink: #e9ede6;
+          --ink-2: #a4aea2;
+          --ink-3: #77816f;
+          --line: #2b332a;
+          --accent: #3ec48f;
+          --accent-strong: #63d3a5;
+          --accent-soft: #173327;
+          --warn: #e08a6d;
+          --warn-soft: #38231b;
+          --ok: #3ec48f;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -18px rgba(0, 0, 0, 0.8);
+          --nav-bg: rgba(18, 22, 18, 0.92);
+          --cat-cyber: #e08a6d;
+          --cat-tech: #7fb3cc;
+          --cat-fintech: #d3ab4e;
+          --cat-ai: #5cc4b2;
+          --cat-ent: #e29a4e;
+          --cat-hack: #3ec48f;
+          --cat-careers: #a4aea2;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; scroll-padding-top: 76px; scroll-padding-bottom: 110px; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.45;
+        padding-bottom: calc(76px + env(safe-area-inset-bottom));
+      }
+      button { font: inherit; color: inherit; }
+      a { color: var(--accent); }
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+      .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+
+      /* ---------- Header ---------- */
+      header.topbar {
+        position: sticky; top: 0; z-index: 40;
+        background: var(--nav-bg);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .topbar-in { display: flex; align-items: center; gap: 10px; padding: 10px 0; }
+      .brand { font-weight: 700; font-size: 19px; letter-spacing: -0.02em; }
+      .brand .pub {
+        font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--accent); background: var(--accent-soft);
+        border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px;
+        vertical-align: 3px; margin-left: 6px;
+      }
+      .topbar .spacer { flex: 1; }
+      .icon-btn {
+        display: inline-flex; align-items: center; gap: 7px;
+        background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+        padding: 8px 12px; font-size: 14px; font-weight: 500; cursor: pointer; min-height: 40px;
+      }
+      .icon-btn svg { width: 17px; height: 17px; flex: none; }
+      .icon-btn:active { background: var(--surface-2); }
+
+      /* ---------- Views ---------- */
+      main { padding-top: 18px; }
+      .view { display: none; }
+      .view.active { display: block; }
+      h1.page-title { font-size: 26px; line-height: 1.15; letter-spacing: -0.02em; margin: 2px 0 6px; font-weight: 700; }
+      .lede { color: var(--ink-2); margin: 0 0 18px; font-size: 15px; }
+      h2.section-title { font-size: 15px; font-weight: 600; margin: 26px 0 10px; display: flex; align-items: baseline; gap: 8px; }
+      h2.section-title .count { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--ink-3); font-weight: 500; }
+      .snapshot-note { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink-3); }
+
+      /* ---------- Stat row ---------- */
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 4px; }
+      .stat {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+        padding: 12px 14px; text-align: left; cursor: pointer; box-shadow: var(--shadow);
+      }
+      .stat .n { font-family: "IBM Plex Mono", monospace; font-size: 24px; font-weight: 600; line-height: 1; }
+      .stat .l { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; font-weight: 500; }
+      .stat:active { background: var(--surface-2); }
+
+      /* ---------- Sources bubble ---------- */
+      .sources-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+      .sources-head {
+        width: 100%; display: flex; align-items: center; gap: 10px; text-align: left;
+        background: none; border: 0; padding: 14px 16px; cursor: pointer; min-height: 48px;
+      }
+      .sources-head .t { font-weight: 600; font-size: 15px; }
+      .sources-head .s { color: var(--ink-2); font-size: 13px; margin-left: auto; font-family: "IBM Plex Mono", monospace; }
+      .sources-head .chev { transition: transform 0.18s ease; color: var(--ink-3); display: inline-flex; }
+      .sources-head .chev svg { width: 16px; height: 16px; }
+      .sources-card.open .sources-head .chev { transform: rotate(180deg); }
+      .sources-body { display: none; border-top: 1px solid var(--line); padding: 6px 16px 14px; }
+      .sources-card.open .sources-body { display: block; }
+      .source-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14.5px; }
+      .source-row:last-child { border-bottom: 0; }
+      .source-row .what { color: var(--ink-2); font-size: 13px; text-align: right; }
+      .source-row a { font-weight: 500; text-decoration: none; }
+      .source-row a:hover { text-decoration: underline; }
+
+      /* ---------- Search / filters ---------- */
+      .search-box { position: relative; margin: 4px 0 12px; }
+      .search-box svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--ink-3); pointer-events: none; }
+      .search-box input {
+        width: 100%; padding: 12px 40px 12px 40px; font: inherit; font-size: 16px;
+        background: var(--surface); color: var(--ink);
+        border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow);
+      }
+      .search-box input::placeholder { color: var(--ink-3); }
+      .search-clear {
+        position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+        border: 0; background: var(--surface-2); border-radius: 999px; width: 30px; height: 30px;
+        display: none; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-2);
+      }
+      .search-clear svg { position: static; transform: none; width: 14px; height: 14px; color: inherit; }
+      .search-clear.show { display: inline-flex; }
+
+      .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+      .chip {
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+        border-radius: 999px; padding: 7px 13px; font-size: 13.5px; font-weight: 500;
+        cursor: pointer; min-height: 36px; display: inline-flex; align-items: center; gap: 7px;
+      }
+      .chip .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--ink-3); flex: none; }
+      .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+      .chip[aria-pressed="true"] .dot { background: var(--bg); }
+
+      .tabs { display: flex; gap: 2px; background: var(--surface-2); border-radius: 11px; padding: 3px; margin: 0 0 14px; }
+      .tabs button {
+        flex: 1; border: 0; background: none; border-radius: 8px; padding: 9px 4px;
+        font-size: 14px; font-weight: 500; color: var(--ink-2); cursor: pointer; min-height: 40px;
+      }
+      .tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: var(--shadow); }
+      .results-line { font-size: 13.5px; color: var(--ink-2); margin: 0 2px 12px; min-height: 18px; }
+
+      /* ---------- Event cards ---------- */
+      .cards { display: flex; flex-direction: column; gap: 12px; }
+      .card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+        box-shadow: var(--shadow); padding: 16px; display: flex; gap: 14px;
+      }
+      .card.archived { opacity: 0.72; }
+      .date-block { flex: none; width: 52px; text-align: center; padding-top: 2px; }
+      .date-block .d { font-family: "IBM Plex Mono", monospace; font-size: 24px; font-weight: 600; line-height: 1; }
+      .date-block .m { font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-2); margin-top: 3px; }
+      .date-block .rel { font-size: 11px; color: var(--accent); font-weight: 600; margin-top: 6px; line-height: 1.25; }
+      .card.archived .date-block .rel { color: var(--ink-3); }
+      .card-main { flex: 1; min-width: 0; }
+      .card-top { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 7px; }
+      .cat-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+      .cat-tag .dot { width: 8px; height: 8px; border-radius: 999px; flex: none; }
+      .flag {
+        font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600;
+        text-transform: uppercase; letter-spacing: 0.06em; border-radius: 999px; padding: 2.5px 8px;
+        background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line);
+      }
+      .flag.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+      .flag.ok { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+      .card h3 { font-size: 17.5px; line-height: 1.25; margin: 0 0 7px; font-weight: 600; letter-spacing: -0.01em; }
+      .meta { display: flex; flex-direction: column; gap: 3px; margin-bottom: 8px; }
+      .meta .row { display: flex; gap: 8px; font-size: 13.5px; color: var(--ink-2); align-items: baseline; }
+      .meta .k { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-3); flex: none; width: 44px; }
+      .meta .price { color: var(--ink); font-weight: 600; }
+      .card .desc { font-size: 14px; color: var(--ink-2); margin: 0 0 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+      .card-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 7px; min-height: 40px;
+        border-radius: 10px; border: 1px solid var(--line); background: var(--surface);
+        padding: 8px 13px; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: none; color: var(--ink);
+      }
+      .btn svg { width: 15px; height: 15px; flex: none; }
+      .btn:active { background: var(--surface-2); }
+      .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+      @media (prefers-color-scheme: dark) { .btn.primary { color: #0b1512; } }
+      .btn.primary:active { background: var(--accent-strong); }
+      .btn.small { min-height: 36px; padding: 6px 11px; font-size: 13.5px; }
+      .btn[disabled] { opacity: 0.55; cursor: default; }
+      .link-inert { font-size: 13.5px; color: var(--warn); font-weight: 500; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
+      .check-note { font-size: 12.5px; color: var(--ink-2); margin-top: 9px; display: none; }
+      .check-note.show { display: block; }
+      .check-note.bad { color: var(--warn); }
+
+      /* Track bubble */
+      .track-wrap { position: relative; }
+      .track-btn {
+        position: relative; overflow: hidden;
+        display: inline-flex; align-items: center; gap: 7px; min-height: 40px;
+        border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2);
+        padding: 8px 15px; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--ink);
+        -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation;
+      }
+      .track-btn .fill { position: absolute; inset: 0; width: 0%; background: var(--accent-soft); pointer-events: none; }
+      .track-btn .lbl { position: relative; display: inline-flex; align-items: center; gap: 7px; }
+      .track-btn .lbl svg { width: 15px; height: 15px; }
+      .track-btn.set { background: var(--accent); border-color: var(--accent); color: #fff; }
+      @media (prefers-color-scheme: dark) { .track-btn.set { color: #0b1512; } }
+      .track-btn.set .fill { background: transparent; }
+      .track-opts {
+        display: none; gap: 6px; flex-wrap: wrap; margin-top: 9px;
+        background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 9px;
+      }
+      .track-opts.open { display: flex; }
+      .track-opts .hint { width: 100%; font-size: 12px; color: var(--ink-2); margin: 0 2px 2px; }
+      .track-opt {
+        flex: 1; min-width: 92px; min-height: 42px; border-radius: 9px; cursor: pointer;
+        border: 1px solid var(--line); background: var(--surface); font-weight: 600; font-size: 14px;
+        position: relative; overflow: hidden; -webkit-user-select: none; user-select: none; touch-action: manipulation;
+      }
+      .track-opt .fill { position: absolute; inset: 0; width: 0%; background: var(--accent-soft); pointer-events: none; }
+      .track-opt .lbl { position: relative; }
+      .track-opt[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+      @media (prefers-color-scheme: dark) { .track-opt[aria-pressed="true"] { color: #0b1512; } }
+      .track-opt.clear { flex: 0 0 auto; min-width: 0; padding: 0 12px; font-weight: 500; color: var(--ink-2); }
+
+      /* ---------- Panels (add / settings) ---------- */
+      .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 18px 16px; margin-bottom: 14px; }
+      .panel h2 { font-size: 17px; margin: 0 0 6px; font-weight: 600; letter-spacing: -0.01em; }
+      .panel p { font-size: 14px; color: var(--ink-2); margin: 0 0 12px; }
+      .panel label.f-label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 6px; }
+      .panel label.f-label:first-of-type { margin-top: 4px; }
+      textarea, input[type="text"], input[type="password"] {
+        width: 100%; font: inherit; font-size: 16px; color: var(--ink);
+        background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px;
+      }
+      textarea { min-height: 110px; resize: vertical; line-height: 1.45; }
+      .char-count { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; color: var(--ink-3); text-align: right; margin-top: 5px; }
+      .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+      .status-line { font-size: 14px; margin-top: 12px; min-height: 20px; }
+      .status-line.ok { color: var(--ok); font-weight: 500; }
+      .status-line.bad { color: var(--warn); font-weight: 500; }
+      .key-status {
+        display: flex; align-items: center; gap: 9px; background: var(--surface-2);
+        border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 14px; font-weight: 500;
+      }
+      .key-status .dot { width: 9px; height: 9px; border-radius: 999px; background: var(--ink-3); flex: none; }
+      .key-status.on .dot { background: var(--accent); }
+      .key-status .mono { font-family: "IBM Plex Mono", monospace; font-size: 13px; }
+      .usage { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--ink-2); margin-top: 10px; }
+      .usage .bar { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-top: 6px; border: 1px solid var(--line); }
+      .usage .bar i { display: block; height: 100%; background: var(--accent); width: 0%; }
+      .fineprint { font-size: 12.5px; color: var(--ink-3); margin-top: 10px; }
+
+      .interest-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 10px; }
+      .interest-chip {
+        display: inline-flex; align-items: center; gap: 7px; background: var(--accent-soft);
+        border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 6px 8px 6px 13px;
+        font-size: 13.5px; font-weight: 500; min-height: 34px;
+      }
+      .interest-chip button {
+        border: 0; background: var(--surface); border-radius: 999px; width: 22px; height: 22px;
+        display: inline-flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-2); font-size: 14px; line-height: 1;
+      }
+      .interest-add { display: flex; gap: 8px; }
+      .interest-add input { flex: 1; }
+      .empty { text-align: center; padding: 34px 18px; color: var(--ink-2); }
+      .empty .big { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 5px; }
+      .empty p { margin: 0; font-size: 14px; }
+
+      .cal-group { font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); margin: 20px 0 10px; }
+      .cal-group:first-of-type { margin-top: 6px; }
+
+      .arch-toggle {
+        width: 100%; margin-top: 18px; display: flex; align-items: center; gap: 10px;
+        background: none; border: 1px dashed var(--line); border-radius: 12px; padding: 13px 16px;
+        cursor: pointer; font-weight: 600; font-size: 14.5px; color: var(--ink-2); min-height: 48px;
+      }
+      .arch-toggle .s { margin-left: auto; font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+      .arch-toggle .chev { display: inline-flex; transition: transform 0.18s ease; }
+      .arch-toggle .chev svg { width: 16px; height: 16px; }
+      .arch-toggle.open .chev { transform: rotate(180deg); }
+      #archived-list { margin-top: 12px; }
+
+      /* ---------- Bottom nav ---------- */
+      nav.bottomnav {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+        background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom);
+      }
+      .bottomnav-in { max-width: 720px; margin: 0 auto; display: flex; }
+      .nav-item {
+        flex: 1; border: 0; background: none; cursor: pointer; position: relative;
+        display: flex; flex-direction: column; align-items: center; gap: 3px;
+        padding: 9px 4px 8px; font-size: 11.5px; font-weight: 500; color: var(--ink-3); min-height: 58px;
+      }
+      .nav-item svg { width: 22px; height: 22px; }
+      .nav-item[aria-current="page"] { color: var(--accent); font-weight: 600; }
+      .nav-badge {
+        position: absolute; top: 5px; left: calc(50% + 3px);
+        background: var(--accent); color: #fff; font-family: "IBM Plex Mono", monospace;
+        font-size: 10.5px; font-weight: 600; border-radius: 999px; min-width: 19px; height: 19px;
+        display: none; align-items: center; justify-content: center; padding: 0 5px;
+      }
+      @media (prefers-color-scheme: dark) { .nav-badge { color: #0b1512; } }
+      .nav-badge.show { display: inline-flex; }
+
+      @media (max-width: 639px) {
+        main { padding-top: 10px; }
+        .lede { margin-bottom: 12px; }
+        .stats { margin-top: 10px; }
+        .stat { padding: 10px 12px; }
+        h2.section-title { margin-top: 20px; }
+      }
+      @media (min-width: 640px) {
+        h1.page-title { font-size: 30px; }
+        .card { padding: 18px 20px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * { transition: none !important; animation: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="wrap topbar-in">
+        <div class="brand">EventOS<span class="pub">Public</span></div>
+        <div class="spacer"></div>
+        <button class="icon-btn" id="settings-btn" type="button" aria-label="Open settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <!-- ============ HOME ============ -->
+      <section class="view" id="view-home" aria-label="Home">
+        <h1 class="page-title">Tech, security &amp; startup events in Singapore</h1>
+        <p class="lede">One feed for technology, cybersecurity and entrepreneurship events — conferences, meetups and hackathons, Singapore first.</p>
+
+        <div class="stats">
+          <button class="stat" type="button" data-goto="events">
+            <div class="n" id="stat-upcoming">0</div>
+            <div class="l">Upcoming events</div>
+          </button>
+          <button class="stat" type="button" data-goto="calendar">
+            <div class="n" id="stat-going">0</div>
+            <div class="l">You&rsquo;re going to</div>
+          </button>
+          <button class="stat" type="button" data-goto="saved">
+            <div class="n" id="stat-saved">0</div>
+            <div class="l">Saved for later</div>
+          </button>
+        </div>
+
+        <h2 class="section-title">Top pick for you</h2>
+        <div id="top-pick"></div>
+
+        <h2 class="section-title">Where these events come from</h2>
+        <div class="sources-card" id="sources-card">
+          <button class="sources-head" type="button" id="sources-toggle" aria-expanded="false">
+            <span class="t">Sources</span>
+            <span class="s" id="sources-count"></span>
+            <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+          </button>
+          <div class="sources-body" id="sources-body"></div>
+        </div>
+
+        <h2 class="section-title">Coming up next</h2>
+        <div class="cards" id="home-next"></div>
+        <div class="btn-row">
+          <button class="btn" type="button" data-goto="events">Browse all events</button>
+          <button class="btn" type="button" data-goto="add">Add from a message</button>
+        </div>
+      </section>
+
+      <!-- ============ EVENTS ============ -->
+      <section class="view" id="view-events" aria-label="Events">
+        <h1 class="page-title">Events</h1>
+        <p class="lede" style="margin-bottom:12px;">Singapore by default. <span class="snapshot-note">Starter list checked 8 Nov 2026 — use Re-check on a card to verify a link.</span></p>
+
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="search-input" placeholder="Search events, venues, topics…" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="120" aria-label="Search events" />
+          <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="chips" id="category-chips" role="group" aria-label="Filter by category"></div>
+
+        <div class="tabs" role="tablist" aria-label="Event views">
+          <button type="button" role="tab" data-tab="foryou">For You</button>
+          <button type="button" role="tab" data-tab="upcoming">Upcoming</button>
+          <button type="button" role="tab" data-tab="saved">Saved</button>
+          <button type="button" role="tab" data-tab="tracking">Tracking</button>
+        </div>
+
+        <p class="results-line" id="results-line" role="status"></p>
+        <div class="cards" id="events-list"></div>
+        <div id="events-empty"></div>
+
+        <button class="arch-toggle" type="button" id="arch-toggle" aria-expanded="false">
+          <span>Archived</span>
+          <span class="s" id="arch-count"></span>
+          <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+        </button>
+        <div class="cards" id="archived-list" hidden></div>
+
+        <h2 class="section-title" id="add-anchor">Add from a message</h2>
+        <div class="panel" id="add-panel">
+          <p>Paste a Telegram, WhatsApp or newsletter announcement and EventOS will pull out the event — title, date, venue, price and sign-up link.</p>
+          <label class="f-label" for="paste-box">Announcement text</label>
+          <textarea id="paste-box" maxlength="8000" placeholder="Paste the announcement here…"></textarea>
+          <div class="char-count"><span id="paste-count">0</span> / 8,000</div>
+          <div class="btn-row">
+            <button class="btn primary" type="button" id="extract-btn">Extract event</button>
+          </div>
+          <div class="status-line" id="extract-status" role="status"></div>
+        </div>
+      </section>
+
+      <!-- ============ CALENDAR ============ -->
+      <section class="view" id="view-calendar" aria-label="My Calendar">
+        <h1 class="page-title">My Calendar</h1>
+        <p class="lede">Events you&rsquo;ve marked <strong>Going</strong>, in date order.</p>
+        <div id="calendar-list"></div>
+      </section>
+
+      <!-- ============ SETTINGS ============ -->
+      <section class="view" id="view-settings" aria-label="Settings">
+        <h1 class="page-title">Settings</h1>
+        <p class="lede">Your own Gemini key powers extraction. Everything here stays in this browser, on this device.</p>
+
+        <div class="panel" id="key-panel">
+          <h2>Your Gemini API key</h2>
+          <p>Add-from-a-message sends the pasted announcement straight from your browser to Google&rsquo;s Gemini API using your key. The key is stored only in this browser and is never sent to any EventOS server — there isn&rsquo;t one. Don&rsquo;t have a key? <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">Get a free key from Google AI Studio</a> — the free tier needs no card and no billing account.</p>
+          <div class="key-status" id="key-status"><span class="dot"></span><span id="key-status-text">No key saved</span></div>
+          <label class="f-label" for="key-input">Gemini API key</label>
+          <input type="password" id="key-input" placeholder="Paste your key…" autocomplete="off" autocapitalize="off" spellcheck="false" />
+          <div class="btn-row">
+            <button class="btn" type="button" id="key-toggle">Show</button>
+            <button class="btn primary" type="button" id="key-save">Save key</button>
+            <button class="btn" type="button" id="key-test">Test</button>
+            <button class="btn" type="button" id="key-delete">Delete</button>
+          </div>
+          <div class="status-line" id="key-msg" role="status"></div>
+          <div class="usage">
+            <span id="usage-text">Gemini calls today: 0 / 200</span>
+            <div class="bar"><i id="usage-bar"></i></div>
+            <div class="fineprint">Free-tier guardrails: at most 10 calls a minute and 200 a day; extraction pauses for the day at 160 calls so you stay well inside the free tier.</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Your interests</h2>
+          <p>These steer the <strong>For You</strong> ranking and the Top Pick on Home. Add topics you care about; remove ones you don&rsquo;t.</p>
+          <div class="interest-chips" id="interest-chips"></div>
+          <div class="interest-add">
+            <input type="text" id="interest-input" placeholder="Add an interest — e.g. zero trust" maxlength="40" aria-label="Add an interest" />
+            <button class="btn" type="button" id="interest-add-btn">Add</button>
+          </div>
+          <div class="status-line" id="interest-msg" role="status"></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottomnav" aria-label="Main">
+      <div class="bottomnav-in">
+        <button class="nav-item" type="button" data-nav="home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10.5 9-7.5 9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-item" type="button" data-nav="events">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg>
+          <span>Events</span>
+        </button>
+        <button class="nav-item" type="button" data-nav="calendar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="m9.2 15.8 2 2 3.8-4"/></svg>
+          <span>My Calendar</span>
+          <span class="nav-badge" id="going-badge">0</span>
+        </button>
+      </div>
+    </nav>
+
+    <script>
+      "use strict";
+
+      /* ================= Data: starter catalogue (snapshot, checked 8 Nov 2026) ================= */
+      var EVENTS = [
+        {
+          id: "cybersg-innovation-day-2026",
+          title: "CyberSG Innovation Day 2026",
+          category: "Cybersecurity",
+          tags: ["cybersecurity", "innovation", "startups", "government"],
+          start: "2026-11-10", end: "2026-11-10", timeLabel: "2:00 pm – 4:00 pm",
+          venue: "Suntec Singapore Convention & Exhibition Centre, Nicoll Rooms 1–3",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "Cyber Security Agency of Singapore (CSA)",
+          url: "https://www.csa.gov.sg/news-events/events/cybersg-innovation-day-2026/",
+          source: "CSA",
+          desc: "Researchers, cybersecurity solution providers and enterprise users explore emerging cyber technologies, funding opportunities and collaborations. Includes the launch of CyberCall 2026 and a cybersecurity innovation exhibition."
+        },
+        {
+          id: "idc-ai-data-summit-2026",
+          title: "IDC AI & Data Summit ASEAN 2026",
+          category: "AI & Data",
+          tags: ["artificial intelligence", "ai", "data", "enterprise", "technology"],
+          start: "2026-11-12", end: "2026-11-12", timeLabel: "Full day",
+          venue: "Singapore",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "IDC",
+          url: "https://infosec-conferences.com/country/singapore/",
+          source: "IDC",
+          desc: "Enterprise summit on agentic AI systems that are autonomous, secure and scalable — plus data governance, model governance and responsible AI frameworks. Aimed at CIOs, CDOs, CISOs and IT directors."
+        },
+        {
+          id: "sg-india-hackathon-2026",
+          title: "Singapore–India Hackathon 2026",
+          category: "Hackathons",
+          tags: ["hackathon", "students", "fintech", "entrepreneurship", "artificial intelligence"],
+          start: "2026-11-15", end: "2026-11-17", timeLabel: "36 hours of building",
+          venue: "Singapore Management University (SMU)",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "SMU Institute for Innovation & Entrepreneurship, TiE Singapore, AICTE",
+          url: "https://devhunt.org/hackathons",
+          source: "DevHunt listing",
+          desc: "About 120 selected students from Singapore and India form mixed cross-border teams to solve industry problems in fintech, climate and social innovation over three days at SMU."
+        },
+        {
+          id: "sff-2026",
+          title: "Singapore FinTech Festival 2026",
+          category: "Fintech",
+          tags: ["fintech", "entrepreneurship", "startups", "technology", "payments", "artificial intelligence"],
+          start: "2026-11-18", end: "2026-11-20", timeLabel: "From 7:30 am daily",
+          venue: "Singapore EXPO, Halls 1–6",
+          city: "Singapore",
+          price: "S$1,500 – S$6,000",
+          organiser: "Monetary Authority of Singapore (MAS) & GFTN",
+          url: "https://www.fintechfestival.sg/why-attend",
+          source: "Singapore FinTech Festival",
+          desc: "The world's largest fintech gathering: policymakers, financial institutions, founders and investors across five themes — technology, geoeconomics, capital, talent and policy. Complimentary passes for governments, regulators, academics, students and non-profits; Delegate Pass S$1,500, Executive Pass S$6,000."
+        },
+        {
+          id: "cyber-revolution-summit-2026",
+          title: "Cyber Revolution Summit: Singapore 2026",
+          category: "Cybersecurity",
+          tags: ["cybersecurity", "zero trust", "threat intelligence", "ciso"],
+          start: "2026-11-24", end: "2026-11-24", timeLabel: "9:00 am – 5:00 pm",
+          venue: "Orchard Hotel Singapore",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "TraiCon Events",
+          url: "https://www.eventbrite.com/e/cyber-revolution-summit-singapore-tickets-2003275546085",
+          linkStatus: "removed",
+          source: "Eventbrite",
+          desc: "Regional cybersecurity summit on infrastructure protection, threat intelligence and digital trust across Southeast Asia, for CISOs, CTOs and senior security leaders. Heads-up: the Eventbrite sign-up page was reported removed on 8 Nov 2026 — check the organiser's site before planning around it."
+        },
+        {
+          id: "sans-december-singapore-2026",
+          title: "SANS December Singapore 2026",
+          category: "Cybersecurity",
+          tags: ["cybersecurity", "training", "certification", "incident response"],
+          start: "2026-11-30", end: "2026-12-05", timeLabel: "Courses from 8:30 am",
+          venue: "Grand Copthorne Waterfront Hotel (also virtual)",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "SANS Institute",
+          url: "https://www.sans.org/cyber-security-training-events/december-singapore-2026",
+          source: "SANS Institute",
+          desc: "A week of hands-on cybersecurity training with SANS instructors, in person in Singapore and live online. Courses align with GIAC certifications; the December run includes ICS515: ICS Visibility, Detection, and Response."
+        },
+        {
+          id: "dicyfor-singapore-2026",
+          title: "Dicyfor Security Summit Singapore 2026",
+          category: "Cybersecurity",
+          tags: ["cybersecurity", "artificial intelligence", "ai security", "risk"],
+          start: "2026-12-03", end: "2026-12-03", timeLabel: "Full day",
+          venue: "voco Orchard Singapore",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "Dicyfor",
+          url: "https://www.dicyfor.com/singapore2026",
+          source: "Dicyfor",
+          desc: "Third-edition security summit themed “From Policy to Practice: AI & Cybersecurity That Works” — for security practitioners and risk leaders working on AI security and cyber risk management."
+        },
+        {
+          id: "cybersecurity-awards-2026",
+          title: "The Cybersecurity Awards 2026",
+          category: "Cybersecurity",
+          tags: ["cybersecurity", "awards", "community"],
+          start: "2026-12-11", end: "2026-12-11", timeLabel: "See AiSP calendar",
+          venue: "Punggol Digital District",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "AiSP (Association of Information Security Professionals)",
+          url: "https://www.aisp.sg/events_2026.html",
+          source: "AiSP",
+          desc: "Annual awards recognising Singapore's cybersecurity professionals and organisations, held at the Punggol Digital District alongside the district's grand opening week."
+        },
+        {
+          id: "aisp-career-fair-2026",
+          title: "AiSP Cybersecurity Career Fair 2026",
+          category: "Careers",
+          tags: ["cybersecurity", "careers", "jobs", "students"],
+          start: "2026-12-12", end: "2026-12-12", timeLabel: "10:00 am – 6:00 pm",
+          venue: "Singapore Institute of Technology (SIT), Punggol Campus",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "AiSP & Singapore Institute of Technology",
+          url: "https://www.aisp.sg/cybercareerfair2026.html",
+          source: "AiSP",
+          desc: "Inaugural career fair bringing together cybersecurity industry partners, government agencies, educational institutions and aspiring professionals — held with the grand opening of the Punggol Digital District."
+        },
+        {
+          id: "hacknroll-2027",
+          title: "Hack&Roll 2027",
+          category: "Hackathons",
+          tags: ["hackathon", "students", "building", "entrepreneurship"],
+          start: "2027-01-16", end: "2027-01-17", timeLabel: "24-hour hackathon",
+          venue: "NUS UTown, National University of Singapore",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "NUS Hackers",
+          url: "https://senior.skollar.club/competitions/singapore-nus-hack-and-roll",
+          source: "Skollar listing",
+          desc: "Singapore's largest student hackathon, run by NUS Hackers. Open to university and polytechnic students across Singapore and Southeast Asia, in teams of 1–4. Registration closes 5 January 2027."
+        },
+        {
+          id: "ot-solutions-day-2026",
+          title: "OT Solutions Day 2026: Preparing for CCoP 2026",
+          category: "Cybersecurity",
+          tags: ["cybersecurity", "operational technology", "critical infrastructure"],
+          start: "2026-11-05", end: "2026-11-05", timeLabel: "See AiSP calendar",
+          venue: "Fraser House, Bugis Junction",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "AiSP-supported event",
+          url: "https://www.aisp.sg/events_2026.html",
+          source: "AiSP",
+          desc: "A focused day on operational-technology security and readiness for Singapore's Cybersecurity Code of Practice (CCoP) 2026 for critical information infrastructure."
+        },
+        {
+          id: "sincon-2026",
+          title: "SINCON 2026 Conference",
+          category: "Cybersecurity",
+          tags: ["cybersecurity", "conference", "community"],
+          start: "2026-10-15", end: "2026-10-16", timeLabel: "Two days",
+          venue: "voco Orchard Singapore",
+          city: "Singapore",
+          price: "Price TBA",
+          organiser: "InfoSec Community Singapore",
+          url: "https://www.aisp.sg/events_2026.html",
+          source: "AiSP calendar",
+          desc: "Singapore's community-driven infosec conference — two days of talks, workshops and villages from the local security community."
+        }
+      ];
+
+      var SOURCES = [
+        { name: "Luma", what: "Tech meetups & community events", url: null },
+        { name: "Eventbrite", what: "Conferences & summits", url: null },
+        { name: "Discover NYC", what: "Youth careers & events (NYC Singapore)", url: "https://discover.nyc.gov.sg/" },
+        { name: "Lantern by Hackami", what: "N0H4TS & partner events, in-app sign-up", url: null },
+        { name: "@hackathonsinsg", what: "Telegram — Singapore hackathons", url: "https://t.me/hackathonsinsg" },
+        { name: "@NYCDiscover", what: "Telegram — National Youth Council", url: "https://t.me/NYCDiscover" },
+        { name: "@YouthCorpsSG", what: "Telegram — Youth Corps Singapore", url: "https://t.me/YouthCorpsSG" },
+        { name: "@ycdivolunteerschannel", what: "Telegram — YCD volunteers", url: "https://t.me/ycdivolunteerschannel" },
+        { name: "@changisimei", what: "Telegram — community events", url: "https://t.me/changisimei" },
+        { name: "Organiser sites", what: "CSA, AiSP, SANS, MAS & others", url: null }
+      ];
+
+      var CATEGORIES = ["All", "Technology", "Cybersecurity", "Fintech", "AI & Data", "Entrepreneurship", "Hackathons", "Careers"];
+      var CAT_COLORS = {
+        "Cybersecurity": "var(--cat-cyber)", "Technology": "var(--cat-tech)", "Fintech": "var(--cat-fintech)",
+        "AI & Data": "var(--cat-ai)", "Entrepreneurship": "var(--cat-ent)", "Hackathons": "var(--cat-hack)",
+        "Careers": "var(--cat-careers)"
+      };
+      var TRACK_LABELS = { saved: "Saved", interested: "Interested", going: "Going" };
+
+      /* ================= State (this session only; nothing leaves the browser) ================= */
+      var state = {
+        view: "home",
+        tab: "foryou",
+        category: "All",
+        query: "",
+        track: {},        // eventId -> "saved" | "interested" | "going"
+        checks: {},       // eventId -> { kind, text, bad }
+        interests: ["cybersecurity", "artificial intelligence", "fintech", "hackathons", "entrepreneurship", "startups"],
+        added: [],        // events extracted by this visitor, this session
+        sourcesOpen: false,
+        archivedOpen: false,
+        openTrackFor: null
+      };
+
+      function allEvents() { return state.added.concat(EVENTS); }
+      function byId(id) {
+        var list = allEvents();
+        for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+        return null;
+      }
+
+      /* ================= Security helpers ================= */
+      // Search / interest text is plain data only: strip control chars, angle
+      // brackets, quotes, backticks and backslash as typed; cap the length.
+      // It is only ever used as a substring match and rendered via textContent.
+      function sanitiseText(raw, cap) {
+        var s = String(raw == null ? "" : raw);
+        s = s.replace(/[\u0000-\u001f\u007f-\u009f<>"'`\\]/g, "");
+        if (s.length > cap) s = s.slice(0, cap);
+        return s;
+      }
+      // Only http/https URLs may become links. Anything else is inert text.
+      function safeUrl(raw) {
+        if (typeof raw !== "string" || !raw) return null;
+        try {
+          var u = new URL(raw);
+          if (u.protocol === "http:" || u.protocol === "https:") return u.href;
+        } catch (e) { /* not a URL */ }
+        return null;
+      }
+      function el(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text != null) n.textContent = text;
+        return n;
+      }
+
+      /* ================= Dates ================= */
+      function parseDate(s) {
+        var p = String(s || "").split("-");
+        if (p.length !== 3) return null;
+        var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+        return isNaN(d.getTime()) ? null : d;
+      }
+      function todayStart() { var n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
+      function isPast(ev) {
+        var end = parseDate(ev.end || ev.start);
+        return end ? end < todayStart() : false;
+      }
+      var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      function dateLabel(ev) {
+        var s = parseDate(ev.start), e = parseDate(ev.end || ev.start);
+        if (!s) return "Date TBA";
+        var f = new Intl.DateTimeFormat("en-SG", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+        if (!e || e.getTime() === s.getTime()) return f.format(s);
+        var f2 = new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short", year: "numeric" });
+        return f2.format(s) + " – " + f2.format(e);
+      }
+      function relLabel(ev) {
+        var s = parseDate(ev.start), t = todayStart();
+        if (!s) return "";
+        var days = Math.round((s - t) / 86400000);
+        var end = parseDate(ev.end || ev.start);
+        if (end && end < t) return "Ended";
+        if (days === 0) return "Today";
+        if (days === 1) return "Tomorrow";
+        if (days > 1 && days <= 30) return "In " + days + " days";
+        if (days > 30) return "Later";
+        return "Happening now";
+      }
+
+      /* ================= For You scoring ================= */
+      function scoreEvent(ev) {
+        var hay = (ev.title + " " + ev.category + " " + (ev.tags || []).join(" ") + " " + ev.desc).toLowerCase();
+        var score = 0;
+        state.interests.forEach(function (kw) {
+          if (!kw) return;
+          if (ev.category.toLowerCase() === kw) score += 4;
+          if (hay.indexOf(kw) !== -1) score += 2;
+        });
+        if (ev.city === "Singapore") score += 1;
+        return score;
+      }
+      function matchesCategory(ev) {
+        if (state.category === "All") return true;
+        if (ev.category === state.category) return true;
+        var c = state.category.toLowerCase();
+        return (ev.tags || []).some(function (t) { return t.toLowerCase() === c; });
+      }
+      function matchesQuery(ev) {
+        if (!state.query) return true;
+        var q = state.query.toLowerCase();
+        var hay = (ev.title + " " + ev.venue + " " + ev.desc + " " + ev.category + " " + (ev.tags || []).join(" ")).toLowerCase();
+        return hay.indexOf(q) !== -1;
+      }
+      function byStart(a, b) { return String(a.start).localeCompare(String(b.start)); }
+
+      /* ================= Icons (static strings, never user data) ================= */
+      var ICON = {
+        pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+        refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>',
+        ext: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>',
+        bookmark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+        check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'
+      };
+      function iconSpan(svg) { var s = el("span"); s.innerHTML = svg; s.style.display = "inline-flex"; return s; }
+
+      /* ================= Event card ================= */
+      function makeCard(ev, opts) {
+        opts = opts || {};
+        var card = el("article", "card" + (isPast(ev) ? " archived" : ""));
+        card.setAttribute("data-id", ev.id);
+
+        var s = parseDate(ev.start);
+        var db = el("div", "date-block");
+        db.appendChild(el("div", "d", s ? String(s.getDate()) : "–"));
+        db.appendChild(el("div", "m", s ? MONTHS[s.getMonth()] : "TBA"));
+        var rel = relLabel(ev);
+        if (rel) db.appendChild(el("div", "rel", rel));
+        card.appendChild(db);
+
+        var main = el("div", "card-main");
+        var top = el("div", "card-top");
+        var cat = el("span", "cat-tag");
+        var dot = el("span", "dot");
+        dot.style.background = CAT_COLORS[ev.category] || "var(--ink-3)";
+        cat.appendChild(dot);
+        cat.appendChild(document.createTextNode(ev.category));
+        top.appendChild(cat);
+        if (ev.city && ev.city !== "Singapore") top.appendChild(el("span", "flag", ev.city));
+        if (ev.mine) top.appendChild(el("span", "flag ok", "Added by you"));
+        if (ev.linkStatus === "removed") top.appendChild(el("span", "flag warn", "Link removed"));
+        if (isPast(ev)) top.appendChild(el("span", "flag", "Past event"));
+        var chk = state.checks[ev.id];
+        if (chk) top.appendChild(el("span", "flag " + (chk.bad ? "warn" : "ok"), chk.kind));
+        main.appendChild(top);
+
+        main.appendChild(el("h3", null, ev.title));
+
+        var meta = el("div", "meta");
+        var r1 = el("div", "row");
+        r1.appendChild(el("span", "k", "When"));
+        r1.appendChild(el("span", null, dateLabel(ev) + (ev.timeLabel ? " · " + ev.timeLabel : "")));
+        meta.appendChild(r1);
+        var r2 = el("div", "row");
+        r2.appendChild(el("span", "k", "Where"));
+        r2.appendChild(el("span", null, ev.venue || "Venue TBA"));
+        meta.appendChild(r2);
+        var r3 = el("div", "row");
+        r3.appendChild(el("span", "k", "Price"));
+        r3.appendChild(el("span", "price", ev.price || "Price TBA"));
+        meta.appendChild(r3);
+        if (ev.organiser) {
+          var r4 = el("div", "row");
+          r4.appendChild(el("span", "k", "By"));
+          r4.appendChild(el("span", null, ev.organiser));
+          meta.appendChild(r4);
+        }
+        main.appendChild(meta);
+
+        if (ev.desc) main.appendChild(el("p", "desc", ev.desc));
+
+        var actions = el("div", "card-actions");
+
+        // Track bubble (hold to open, hold or tap an option to confirm)
+        var tw = el("div", "track-wrap");
+        var cur = state.track[ev.id];
+        var tb = el("button", "track-btn" + (cur ? " set" : ""));
+        tb.type = "button";
+        tb.setAttribute("aria-haspopup", "true");
+        tb.setAttribute("aria-expanded", state.openTrackFor === ev.id ? "true" : "false");
+        tb.setAttribute("aria-label", (cur ? "Tracking: " + TRACK_LABELS[cur] + ". " : "") + "Hold to " + (cur ? "change tracking" : "track this event"));
+        var fill = el("span", "fill"); tb.appendChild(fill);
+        var lbl = el("span", "lbl");
+        lbl.appendChild(iconSpan(cur && cur === "going" ? ICON.check : ICON.bookmark));
+        lbl.appendChild(document.createTextNode(cur ? TRACK_LABELS[cur] : "Track"));
+        tb.appendChild(lbl);
+        attachHold(tb, fill, function () { toggleTrackOptions(ev.id); });
+        tw.appendChild(tb);
+
+        var optsBox = el("div", "track-opts" + (state.openTrackFor === ev.id ? " open" : ""));
+        optsBox.appendChild(el("p", "hint", "Hold an option (or tap it) to confirm:"));
+        ["saved", "interested", "going"].forEach(function (k) {
+          var b = el("button", "track-opt");
+          b.type = "button";
+          b.setAttribute("aria-pressed", cur === k ? "true" : "false");
+          var f2 = el("span", "fill"); b.appendChild(f2);
+          var l2 = el("span", "lbl", TRACK_LABELS[k]); b.appendChild(l2);
+          attachHold(b, f2, function () { setTrack(ev.id, cur === k ? null : k); });
+          optsBox.appendChild(b);
+        });
+        if (cur) {
+          var clear = el("button", "track-opt clear", "Clear");
+          clear.type = "button";
+          clear.addEventListener("click", function () { setTrack(ev.id, null); });
+          optsBox.appendChild(clear);
+        }
+        tw.appendChild(optsBox);
+        actions.appendChild(tw);
+
+        // Re-check
+        var rc = el("button", "btn small");
+        rc.type = "button";
+        rc.appendChild(iconSpan(ICON.refresh));
+        rc.appendChild(document.createTextNode("Re-check"));
+        rc.setAttribute("aria-label", "Re-check whether " + ev.title + " is still live");
+        rc.addEventListener("click", function () { recheckEvent(ev.id, rc); });
+        actions.appendChild(rc);
+
+        // Source / register link — http/https only, else inert text
+        var href = safeUrl(ev.url);
+        if (ev.linkStatus === "removed") {
+          var inert = el("span", "link-inert", "Sign-up link removed by organiser");
+          actions.appendChild(inert);
+        } else if (href) {
+          var a = el("a", "btn small primary");
+          a.href = href;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.appendChild(document.createTextNode("Register"));
+          a.appendChild(iconSpan(ICON.ext));
+          actions.appendChild(a);
+        } else if (ev.url) {
+          actions.appendChild(el("span", "link-inert", "Link blocked — unsafe address"));
+        }
+        main.appendChild(actions);
+
+        var note = el("p", "check-note" + (chk && chk.bad ? " bad" : "") + (chk ? " show" : ""), chk ? chk.text : "");
+        note.id = "check-note-" + ev.id;
+        main.appendChild(note);
+
+        card.appendChild(main);
+        return card;
+      }
+
+      /* Hold-to-activate: press and hold ~0.5s (fill animates); a plain tap/click also fires. */
+      function attachHold(btn, fill, action) {
+        var timer = null, fired = false;
+        function start(e) {
+          fired = false;
+          if (e.type === "pointerdown" && e.button !== undefined && e.button !== 0) return;
+          fill.style.transition = "width 0.5s linear";
+          fill.style.width = "100%";
+          timer = setTimeout(function () { fired = true; reset(); action(); }, 500);
+        }
+        function reset() {
+          if (timer) { clearTimeout(timer); timer = null; }
+          fill.style.transition = "width 0.15s ease";
+          fill.style.width = "0%";
+        }
+        btn.addEventListener("pointerdown", start);
+        btn.addEventListener("pointerup", reset);
+        btn.addEventListener("pointerleave", reset);
+        btn.addEventListener("pointercancel", reset);
+        btn.addEventListener("click", function () { if (!fired) action(); fired = false; });
+        btn.addEventListener("keydown", function (e) { if (e.key === "Escape") reset(); });
+      }
+
+      function toggleTrackOptions(id) {
+        state.openTrackFor = state.openTrackFor === id ? null : id;
+        renderAll();
+      }
+      function setTrack(id, value) {
+        if (value) state.track[id] = value; else delete state.track[id];
+        state.openTrackFor = null;
+        renderAll();
+      }
+
+      /* ================= Re-check ================= */
+      function setCheck(id, kind, text, bad) {
+        state.checks[id] = { kind: kind, text: text, bad: !!bad };
+        renderAll();
+      }
+      function recheckEvent(id, btn) {
+        var ev = byId(id);
+        if (!ev) return;
+        var href = safeUrl(ev.url);
+        if (ev.url && !href) { setCheck(id, "Blocked", "Re-check: this event's link isn't an http/https address, so it stays blocked and was never opened.", true); return; }
+        if (!href) { setCheck(id, "No link", "Re-check: this event has no source link to verify.", true); return; }
+        if (btn) { btn.disabled = true; }
+        setCheck(id, "Checking…", "Re-checking the organiser's page…", false);
+        var done = false;
+        var ctrl = ("AbortController" in window) ? new AbortController() : null;
+        var to = setTimeout(function () { if (ctrl) ctrl.abort(); }, 9000);
+        function finish(kind, text, bad) {
+          if (done) return; done = true; clearTimeout(to);
+          setCheck(id, kind, text + " (just now)", bad);
+        }
+        // Cross-origin pages can't be read from a browser, so a response only
+        // proves the page is still being served — reported exactly that way.
+        fetch(href, { mode: "no-cors", signal: ctrl ? ctrl.signal : undefined, credentials: "omit", referrerPolicy: "no-referrer" })
+          .then(function () {
+            if (ev.linkStatus === "removed") {
+              finish("Still flagged", "Re-check: the page address responded, but the organiser's sign-up page was reported removed on 8 Nov 2026 and a browser check can't read its content — treat sign-up as closed until the organiser posts a new link.", true);
+            } else {
+              finish("Still live", "Re-check: the organiser's page is still being served. A browser check can't read the page, so confirm sign-up is open on the page itself.", false);
+            }
+          })
+          .catch(function () {
+            finish("Unreachable", "Re-check: the organiser's page couldn't be reached from this browser — it may have been removed, or the site may be down or blocking checks.", true);
+          });
+      }
+
+      /* ================= Rendering ================= */
+      function $(id) { return document.getElementById(id); }
+
+      function filteredEvents() {
+        var list = allEvents().filter(function (ev) { return matchesCategory(ev) && matchesQuery(ev); });
+        var upcoming = list.filter(function (ev) { return !isPast(ev); });
+        if (state.tab === "foryou") {
+          return upcoming.slice().sort(function (a, b) {
+            var d = scoreEvent(b) - scoreEvent(a);
+            return d !== 0 ? d : byStart(a, b);
+          });
+        }
+        if (state.tab === "upcoming") return upcoming.slice().sort(byStart);
+        if (state.tab === "saved") return list.filter(function (ev) { return state.track[ev.id] === "saved"; }).sort(byStart);
+        return list.filter(function (ev) { return state.track[ev.id] === "interested" || state.track[ev.id] === "going"; }).sort(byStart);
+      }
+      function archivedEvents() {
+        return allEvents().filter(function (ev) { return isPast(ev) && matchesCategory(ev) && matchesQuery(ev); }).sort(byStart).reverse();
+      }
+
+      function renderEvents() {
+        var list = filteredEvents();
+        var box = $("events-list");
+        box.textContent = "";
+        list.forEach(function (ev) { box.appendChild(makeCard(ev)); });
+
+        var line = $("results-line");
+        var tabName = { foryou: "For You", upcoming: "Upcoming", saved: "Saved", tracking: "Tracking" }[state.tab];
+        var txt = list.length + (list.length === 1 ? " event" : " events") + " · " + tabName;
+        if (state.category !== "All") txt += " · " + state.category;
+        if (state.query) txt += " · matching “" + state.query + "”";
+        line.textContent = txt;
+
+        var empty = $("events-empty");
+        empty.textContent = "";
+        if (!list.length) {
+          var e = el("div", "empty");
+          var msgs = {
+            foryou: ["Nothing matches right now", "Try another category, clear the search, or widen your interests in Settings."],
+            upcoming: ["Nothing coming up here", "Try another category or clear the search."],
+            saved: ["Nothing saved yet", "Hold the Track bubble on any event and choose Save — it will wait for you here."],
+            tracking: ["You're not tracking anything yet", "Hold the Track bubble on an event and mark it Interested or Going."]
+          };
+          var m = state.query ? ["No matches for that search", "Search is a plain text match — try fewer or different words."] : msgs[state.tab];
+          e.appendChild(el("div", "big", m[0]));
+          e.appendChild(el("p", null, m[1]));
+          empty.appendChild(e);
+        }
+
+        var arch = archivedEvents();
+        $("arch-count").textContent = arch.length ? String(arch.length) : "";
+        var abox = $("archived-list");
+        abox.textContent = "";
+        arch.forEach(function (ev) { abox.appendChild(makeCard(ev)); });
+        abox.hidden = !state.archivedOpen;
+        $("arch-toggle").classList.toggle("open", state.archivedOpen);
+        $("arch-toggle").setAttribute("aria-expanded", state.archivedOpen ? "true" : "false");
+      }
+
+      function renderHome() {
+        var upcoming = allEvents().filter(function (ev) { return !isPast(ev); }).sort(byStart);
+        var going = upcoming.filter(function (ev) { return state.track[ev.id] === "going"; });
+        var saved = allEvents().filter(function (ev) { return state.track[ev.id] === "saved"; });
+        $("stat-upcoming").textContent = String(upcoming.length);
+        $("stat-going").textContent = String(going.length);
+        $("stat-saved").textContent = String(saved.length);
+
+        var tp = $("top-pick");
+        tp.textContent = "";
+        var ranked = upcoming.slice().sort(function (a, b) {
+          var d = scoreEvent(b) - scoreEvent(a);
+          return d !== 0 ? d : byStart(a, b);
+        });
+        if (ranked.length) {
+          var wrap = el("div", "cards");
+          wrap.appendChild(makeCard(ranked[0]));
+          tp.appendChild(wrap);
+          var why = el("p", "snapshot-note", "Picked from your interests: " + state.interests.slice(0, 4).join(", ") + (state.interests.length > 4 ? "…" : "") + " — edit them in Settings.");
+          why.style.marginTop = "8px";
+          tp.appendChild(why);
+        }
+
+        var nx = $("home-next");
+        nx.textContent = "";
+        var topId = ranked.length ? ranked[0].id : null;
+        upcoming.filter(function (ev) { return ev.id !== topId; }).slice(0, 3).forEach(function (ev) { nx.appendChild(makeCard(ev)); });
+
+        $("sources-count").textContent = SOURCES.length + " sources";
+        var sb = $("sources-body");
+        sb.textContent = "";
+        SOURCES.forEach(function (s) {
+          var row = el("div", "source-row");
+          var href = safeUrl(s.url);
+          if (href) {
+            var a = el("a", null, s.name);
+            a.href = href; a.target = "_blank"; a.rel = "noopener noreferrer";
+            row.appendChild(a);
+          } else {
+            row.appendChild(el("span", null, s.name));
+          }
+          row.appendChild(el("span", "what", s.what));
+          sb.appendChild(row);
+        });
+        $("sources-card").classList.toggle("open", state.sourcesOpen);
+        $("sources-toggle").setAttribute("aria-expanded", state.sourcesOpen ? "true" : "false");
+      }
+
+      function renderCalendar() {
+        var box = $("calendar-list");
+        box.textContent = "";
+        var going = allEvents()
+          .filter(function (ev) { return state.track[ev.id] === "going"; })
+          .sort(byStart);
+        if (!going.length) {
+          var e = el("div", "empty");
+          e.appendChild(el("div", "big", "Nothing in your calendar yet"));
+          e.appendChild(el("p", null, "When you mark an event Going — hold its Track bubble, then hold Going — it shows up here in date order."));
+          box.appendChild(e);
+          return;
+        }
+        var lastKey = null;
+        going.forEach(function (ev) {
+          var d = parseDate(ev.start);
+          var key = d ? MONTHS[d.getMonth()] + " " + d.getFullYear() : "Date TBA";
+          if (key !== lastKey) { box.appendChild(el("div", "cal-group", key)); lastKey = key; }
+          var wrap = el("div", "cards");
+          wrap.style.marginBottom = "12px";
+          wrap.appendChild(makeCard(ev));
+          box.appendChild(wrap);
+        });
+      }
+
+      function renderNav() {
+        document.querySelectorAll(".nav-item").forEach(function (b) {
+          if (b.getAttribute("data-nav") === state.view) b.setAttribute("aria-current", "page");
+          else b.removeAttribute("aria-current");
+        });
+        document.querySelectorAll(".view").forEach(function (v) { v.classList.remove("active"); });
+        $("view-" + state.view).classList.add("active");
+        var goingCount = allEvents().filter(function (ev) { return state.track[ev.id] === "going"; }).length;
+        var badge = $("going-badge");
+        badge.textContent = String(goingCount);
+        badge.classList.toggle("show", goingCount > 0);
+      }
+
+      function renderAll() { renderNav(); renderHome(); renderEvents(); renderCalendar(); }
+      function showView(v) { state.view = v; renderAll(); window.scrollTo(0, 0); }
+
+      /* ================= Gemini key (bring your own key) ================= */
+      // The key is stored only in this browser's localStorage and is sent only
+      // to Google's Gemini API from this browser when the visitor Tests it or
+      // extracts an event. It is never sent anywhere else.
+      var KEY_STORE = "eventos-public.gemini-key";
+      var RL_STORE = "eventos-public.gemini-usage";
+      var MODEL = "gemini-2.5-flash";
+      var API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/" + MODEL + ":generateContent";
+
+      function getKey() {
+        try { return window.localStorage.getItem(KEY_STORE) || ""; } catch (e) { return ""; }
+      }
+      function setKey(k) {
+        try {
+          if (k) window.localStorage.setItem(KEY_STORE, k);
+          else window.localStorage.removeItem(KEY_STORE);
+        } catch (e) { /* storage unavailable (private mode) — key lasts for this view only */ }
+      }
+      function renderKeyStatus(testedNote) {
+        var key = getKey();
+        var box = $("key-status");
+        box.classList.toggle("on", !!key);
+        var t = $("key-status-text");
+        t.textContent = "";
+        if (key) {
+          t.appendChild(document.createTextNode("Key saved "));
+          var m = el("span", "mono", "••••" + key.slice(-4));
+          t.appendChild(m);
+          if (testedNote) t.appendChild(document.createTextNode(" · " + testedNote));
+        } else {
+          t.textContent = "No key saved";
+        }
+        renderUsage();
+      }
+      function keyMsg(text, kind) {
+        var m = $("key-msg");
+        m.textContent = text || "";
+        m.className = "status-line" + (kind ? " " + kind : "");
+      }
+
+      /* Rate limiter: 10 calls/minute, 200/day, pause at 160/day. */
+      function loadUsage() {
+        var today = new Date().toDateString();
+        var u = { day: today, count: 0, stamps: [] };
+        try {
+          var raw = window.localStorage.getItem(RL_STORE);
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed && parsed.day === today) u = parsed;
+          }
+        } catch (e) { /* start fresh */ }
+        var cutoff = Date.now() - 60000;
+        u.stamps = (u.stamps || []).filter(function (t) { return t > cutoff; });
+        return u;
+      }
+      function saveUsage(u) {
+        try { window.localStorage.setItem(RL_STORE, JSON.stringify(u)); } catch (e) { /* ignore */ }
+      }
+      function rateGate() {
+        var u = loadUsage();
+        if (u.count >= 200) return { ok: false, msg: "Daily cap reached (200 calls). The free-tier guardrail resets tomorrow." };
+        if (u.count >= 160) return { ok: false, msg: "Paused for today at 160 calls to stay safely inside the free tier. Extraction resumes tomorrow — you can still browse and track events." };
+        if (u.stamps.length >= 10) return { ok: false, msg: "That's 10 calls in a minute — the free-tier pace limit. Wait a few seconds and try again." };
+        return { ok: true };
+      }
+      function recordCall() {
+        var u = loadUsage();
+        u.count += 1;
+        u.stamps.push(Date.now());
+        saveUsage(u);
+        renderUsage();
+      }
+      function renderUsage() {
+        var u = loadUsage();
+        $("usage-text").textContent = "Gemini calls today: " + u.count + " / 200" + (u.count >= 160 ? " · paused at 160" : "");
+        $("usage-bar").style.width = Math.min(100, (u.count / 200) * 100) + "%";
+      }
+
+      function geminiCall(key, parts, jsonMode) {
+        var body = { contents: [{ role: "user", parts: parts }] };
+        if (jsonMode) body.generationConfig = { responseMimeType: "application/json", temperature: 0.1 };
+        return fetch(API_BASE, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+          body: JSON.stringify(body)
+        }).then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (data) {
+            if (!res.ok) {
+              var msg = (data && data.error && data.error.message) ? data.error.message : ("Google returned HTTP " + res.status);
+              var err = new Error(msg);
+              err.status = res.status;
+              throw err;
+            }
+            return data;
+          });
+        });
+      }
+      function geminiText(data) {
+        try {
+          var parts = data.candidates[0].content.parts || [];
+          var out = "";
+          parts.forEach(function (p) { if (typeof p.text === "string") out += p.text; });
+          return out;
+        } catch (e) { return ""; }
+      }
+
+      /* ================= Add from a message ================= */
+      function extractMsg(text, kind) {
+        var m = $("extract-status");
+        m.textContent = text || "";
+        m.className = "status-line" + (kind ? " " + kind : "");
+      }
+      function extractEvent() {
+        var raw = $("paste-box").value || "";
+        var text = raw.trim();
+        if (!text) { extractMsg("Paste an announcement first, then tap Extract event.", "bad"); return; }
+        var key = getKey();
+        if (!key) {
+          extractMsg("", "");
+          var m = $("extract-status");
+          m.appendChild(document.createTextNode("A Gemini key is needed to extract events from messages. Add yours in Settings — it's free and takes a minute. "));
+          var b = el("button", "btn small", "Open Settings");
+          b.type = "button";
+          b.addEventListener("click", function () { showView("settings"); });
+          m.appendChild(b);
+          return;
+        }
+        var gate = rateGate();
+        if (!gate.ok) { extractMsg(gate.msg, "bad"); return; }
+        var btn = $("extract-btn");
+        btn.disabled = true;
+        extractMsg("Extracting with Gemini (" + MODEL + ")…", "");
+        recordCall();
+        var prompt = [
+          "Extract one event from the announcement below and reply with ONLY a JSON object (no markdown, no commentary) with these fields:",
+          '{"title": string, "startDate": "YYYY-MM-DD or null", "endDate": "YYYY-MM-DD or null", "timeLabel": string or null, "venue": string or null, "city": string or null, "category": one of "Technology","Cybersecurity","Fintech","AI & Data","Entrepreneurship","Hackathons","Careers", "priceLabel": string or null, "url": string or null, "organiser": string or null, "description": string (1-2 sentences)}',
+          "Use null for anything the announcement does not state. Do not invent dates, prices, venues or links.",
+          "",
+          "ANNOUNCEMENT:",
+          text.slice(0, 8000)
+        ].join("\n");
+        geminiCall(key, [{ text: prompt }], true)
+          .then(function (data) {
+            var out = geminiText(data);
+            var obj = null;
+            try { obj = JSON.parse(out); } catch (e) {
+              var s = out.indexOf("{"), e2 = out.lastIndexOf("}");
+              if (s !== -1 && e2 > s) { try { obj = JSON.parse(out.slice(s, e2 + 1)); } catch (e3) { obj = null; } }
+            }
+            if (!obj || !obj.title) throw new Error("Gemini didn't return a usable event. Try pasting the full announcement.");
+            addExtracted(obj);
+          })
+          .catch(function (err) {
+            var msg = err && err.status === 429
+              ? "Google rate-limited that call (429). Wait a minute and try again — your daily budget is untouched by browsing."
+              : ("Extraction failed: " + (err && err.message ? err.message : "network error"));
+            extractMsg(msg, "bad");
+          })
+          .then(function () { btn.disabled = false; });
+      }
+      function cleanStr(v, cap) {
+        if (typeof v !== "string") return "";
+        return sanitiseText(v, cap).trim();
+      }
+      function validDateStr(v) {
+        if (typeof v !== "string") return "";
+        return /^\d{4}-\d{2}-\d{2}$/.test(v) && parseDate(v) ? v : "";
+      }
+      function addExtracted(o) {
+        var title = cleanStr(o.title, 140);
+        if (!title) { extractMsg("That extraction had no title — nothing was added.", "bad"); return; }
+        var start = validDateStr(o.startDate);
+        var end = validDateStr(o.endDate) || start;
+        var cats = ["Technology", "Cybersecurity", "Fintech", "AI & Data", "Entrepreneurship", "Hackathons", "Careers"];
+        var cat = cats.indexOf(o.category) !== -1 ? o.category : "Technology";
+        var url = safeUrl(typeof o.url === "string" ? o.url : "");
+        var ev = {
+          id: "mine-" + Date.now().toString(36),
+          title: title,
+          category: cat,
+          tags: [cat.toLowerCase()],
+          start: start || "9999-12-31",
+          end: end || start || "9999-12-31",
+          timeLabel: cleanStr(o.timeLabel, 60),
+          venue: cleanStr(o.venue, 120) || "Venue TBA",
+          city: cleanStr(o.city, 40) || "Singapore",
+          price: cleanStr(o.priceLabel, 60) || "Price TBA",
+          organiser: cleanStr(o.organiser, 80),
+          url: url || (typeof o.url === "string" ? o.url : ""),
+          source: "Added from a message",
+          desc: cleanStr(o.description, 400),
+          mine: true
+        };
+        if (!start) { ev.start = ""; ev.end = ""; }
+        // Dedupe against everything already in the feed (title + date, plain text compare)
+        var dupe = allEvents().some(function (x) {
+          return x.title.toLowerCase() === ev.title.toLowerCase() && String(x.start) === String(ev.start);
+        });
+        if (dupe) { extractMsg("That event is already in your feed — no duplicate added.", "bad"); return; }
+        state.added.unshift(ev);
+        $("paste-box").value = "";
+        $("paste-count").textContent = "0";
+        state.tab = "upcoming";
+        state.category = "All";
+        state.query = "";
+        $("search-input").value = "";
+        renderAll();
+        extractMsg("Added “" + ev.title + "” to your feed (this session). Find it under Upcoming.", "ok");
+        var list = $("events-list");
+        if (list) list.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      /* ================= Interests editor ================= */
+      function renderInterests() {
+        var box = $("interest-chips");
+        box.textContent = "";
+        if (!state.interests.length) {
+          box.appendChild(el("span", "snapshot-note", "No interests yet — For You falls back to plain date order."));
+        }
+        state.interests.forEach(function (kw) {
+          var chip = el("span", "interest-chip");
+          chip.appendChild(document.createTextNode(kw));
+          var x = el("button", null, "×");
+          x.type = "button";
+          x.setAttribute("aria-label", "Remove interest " + kw);
+          x.addEventListener("click", function () {
+            state.interests = state.interests.filter(function (i) { return i !== kw; });
+            renderInterests(); renderAll();
+          });
+          chip.appendChild(x);
+          box.appendChild(chip);
+        });
+      }
+      function addInterest() {
+        var input = $("interest-input");
+        var v = sanitiseText(input.value, 40).trim().toLowerCase();
+        var msg = $("interest-msg");
+        if (!v) { msg.textContent = ""; return; }
+        if (state.interests.indexOf(v) !== -1) {
+          msg.textContent = "“" + v + "” is already in your interests.";
+          msg.className = "status-line bad";
+          return;
+        }
+        state.interests.push(v);
+        input.value = "";
+        msg.textContent = "Added “" + v + "”. For You and the Top Pick now rank with it.";
+        msg.className = "status-line ok";
+        renderInterests(); renderAll();
+      }
+
+      /* ================= Wiring ================= */
+      function init() {
+        // Bottom nav + goto buttons
+        document.querySelectorAll(".nav-item").forEach(function (b) {
+          b.addEventListener("click", function () { showView(b.getAttribute("data-nav")); });
+        });
+        $("settings-btn").addEventListener("click", function () { showView("settings"); });
+        document.querySelectorAll("[data-goto]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var g = b.getAttribute("data-goto");
+            if (g === "saved") { state.tab = "saved"; showView("events"); }
+            else if (g === "add") { showView("events"); var p = $("add-panel"); if (p) p.scrollIntoView({ behavior: "smooth", block: "center" }); }
+            else showView(g);
+          });
+        });
+
+        // Category chips
+        var chipBox = $("category-chips");
+        CATEGORIES.forEach(function (c) {
+          var b = el("button", "chip");
+          b.type = "button";
+          b.setAttribute("aria-pressed", c === state.category ? "true" : "false");
+          b.setAttribute("data-cat", c);
+          if (c !== "All") {
+            var d = el("span", "dot");
+            d.style.background = CAT_COLORS[c] || "var(--ink-3)";
+            b.appendChild(d);
+          }
+          b.appendChild(document.createTextNode(c));
+          b.addEventListener("click", function () {
+            state.category = c;
+            chipBox.querySelectorAll(".chip").forEach(function (x) {
+              x.setAttribute("aria-pressed", x.getAttribute("data-cat") === c ? "true" : "false");
+            });
+            renderEvents();
+          });
+          chipBox.appendChild(b);
+        });
+
+        // Tabs
+        document.querySelectorAll(".tabs [data-tab]").forEach(function (b) {
+          b.setAttribute("aria-selected", b.getAttribute("data-tab") === state.tab ? "true" : "false");
+          b.addEventListener("click", function () {
+            state.tab = b.getAttribute("data-tab");
+            document.querySelectorAll(".tabs [data-tab]").forEach(function (x) {
+              x.setAttribute("aria-selected", x === b ? "true" : "false");
+            });
+            renderEvents();
+          });
+        });
+
+        // Search: sanitised as typed, plain substring match only
+        var si = $("search-input");
+        si.addEventListener("input", function () {
+          var clean = sanitiseText(si.value, 80);
+          if (clean !== si.value) si.value = clean;
+          state.query = clean.trim();
+          $("search-clear").classList.toggle("show", !!si.value);
+          renderEvents();
+        });
+        $("search-clear").addEventListener("click", function () {
+          si.value = ""; state.query = "";
+          $("search-clear").classList.remove("show");
+          renderEvents(); si.focus();
+        });
+
+        // Sources + Archived toggles
+        $("sources-toggle").addEventListener("click", function () {
+          state.sourcesOpen = !state.sourcesOpen; renderHome();
+        });
+        $("arch-toggle").addEventListener("click", function () {
+          state.archivedOpen = !state.archivedOpen; renderEvents();
+        });
+
+        // Add from a message
+        var pb = $("paste-box");
+        pb.addEventListener("input", function () { $("paste-count").textContent = String(pb.value.length); });
+        $("extract-btn").addEventListener("click", extractEvent);
+
+        // Key slot
+        renderKeyStatus();
+        $("key-toggle").addEventListener("click", function () {
+          var inp = $("key-input");
+          var show = inp.type === "password";
+          inp.type = show ? "text" : "password";
+          this.textContent = show ? "Hide" : "Show";
+        });
+        $("key-save").addEventListener("click", function () {
+          var v = $("key-input").value.trim();
+          if (!v) { keyMsg("Paste a key first, then Save.", "bad"); return; }
+          setKey(v);
+          $("key-input").value = "";
+          $("key-input").type = "password";
+          $("key-toggle").textContent = "Show";
+          renderKeyStatus();
+          keyMsg("Key saved in this browser. Tap Test to check it against Google.", "ok");
+        });
+        $("key-delete").addEventListener("click", function () {
+          setKey("");
+          $("key-input").value = "";
+          renderKeyStatus();
+          keyMsg("Key deleted from this browser.", "ok");
+        });
+        $("key-test").addEventListener("click", function () {
+          var typed = $("key-input").value.trim();
+          var key = typed || getKey();
+          if (!key) { keyMsg("No key to test — paste one above, or save one first.", "bad"); return; }
+          var gate = rateGate();
+          if (!gate.ok) { keyMsg(gate.msg, "bad"); return; }
+          var btn = this;
+          btn.disabled = true;
+          keyMsg("Testing — one tiny call from your browser to Google…", "");
+          recordCall();
+          geminiCall(key, [{ text: "Reply with exactly: OK" }], false)
+            .then(function (data) {
+              var t = geminiText(data).trim();
+              if (typed) setKey(typed);
+              renderKeyStatus("tested OK");
+              keyMsg("Key works — Google replied" + (t ? " (" + t.slice(0, 12) + ")" : "") + ". Add-from-a-message is ready.", "ok");
+            })
+            .catch(function (err) {
+              var msg = "Test failed: " + (err && err.message ? err.message : "network error");
+              if (err && (err.status === 400 || err.status === 403)) msg = "Test failed — Google rejected that key. Check you copied the whole key from AI Studio, then try again.";
+              if (err && err.status === 429) msg = "Test hit Google's rate limit (429). Wait a minute and test again.";
+              keyMsg(msg, "bad");
+            })
+            .then(function () { btn.disabled = false; });
+        });
+
+        // Interests
+        renderInterests();
+        $("interest-add-btn").addEventListener("click", addInterest);
+        $("interest-input").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addInterest(); } });
+        $("interest-input").addEventListener("input", function () {
+          var clean = sanitiseText(this.value, 40);
+          if (clean !== this.value) this.value = clean;
+        });
+
+        renderAll();
+      }
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>
