@@ -2,6 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <!-- Content Security Policy (OWASP A02/A05 defence in depth): nothing
+         loads by default; the page's one inline script is pinned by its
+         SHA-256 hash, so any other injected or tampered script is refused;
+         styles are this page's own plus Google Fonts; network calls may go
+         only to web addresses (the Gemini API and the sources a visitor
+         adds); no plugins, no form posts, no base-tag hijacking. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-IyddGkMgEU9bkffu1j0YQX/9gUSayNTJfUa8qjjH/LE='; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src https: http:; base-uri 'none'; form-action 'none'" />
+    <meta name="referrer" content="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
@@ -1340,6 +1348,13 @@
       var MODEL = "gemini-2.5-flash";
       var API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/" + MODEL + ":generateContent";
 
+      // A Gemini key is one plain token: letters, digits, dash, underscore.
+      // Anything else (spaces, pasted prose, markup, control characters) is
+      // rejected before the key is stored or sent, so a bad paste can never
+      // smuggle extra headers or break out of the request.
+      function validKeyFormat(k) {
+        return typeof k === "string" && /^[A-Za-z0-9_-]{20,120}$/.test(k);
+      }
       function getKey() {
         try { return window.localStorage.getItem(KEY_STORE) || ""; } catch (e) { return ""; }
       }
@@ -1412,10 +1427,18 @@
       function geminiCall(key, parts, jsonMode) {
         var body = { contents: [{ role: "user", parts: parts }] };
         if (jsonMode) body.generationConfig = { responseMimeType: "application/json", temperature: 0.1 };
+        // The key travels in a header (never in the URL), no cookies are
+        // attached, no referrer is leaked, and the call aborts after 30s so
+        // a hung request can't wedge the UI.
+        var ctrl = ("AbortController" in window) ? new AbortController() : null;
+        var to = setTimeout(function () { if (ctrl) ctrl.abort(); }, 30000);
         return fetch(API_BASE, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
+          signal: ctrl ? ctrl.signal : undefined,
+          credentials: "omit",
+          referrerPolicy: "no-referrer"
         }).then(function (res) {
           return res.json().catch(function () { return {}; }).then(function (data) {
             if (!res.ok) {
@@ -1426,7 +1449,7 @@
             }
             return data;
           });
-        });
+        }).then(function (r) { clearTimeout(to); return r; }, function (e) { clearTimeout(to); throw e; });
       }
       function geminiText(data) {
         try {
@@ -1690,7 +1713,7 @@
           "Use each event's own sign-up / detail link for url when the page gives one, otherwise use the source URL. Use null for anything not stated. Do not invent dates, prices, venues or links. Prefer Singapore events."
         ].join("\n");
         var body = { contents: [{ role: "user", parts: [{ text: prompt }] }], tools: [{ urlContext: {} }], generationConfig: { temperature: 0.1 } };
-        return fetch(API_BASE, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body) })
+        return fetch(API_BASE, { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": key }, body: JSON.stringify(body), credentials: "omit", referrerPolicy: "no-referrer" })
           .then(function (res) {
             return res.json().catch(function () { return {}; }).then(function (data) {
               if (!res.ok) { var err = new Error((data && data.error && data.error.message) || ("Google returned HTTP " + res.status)); err.status = res.status; throw err; }
@@ -1712,7 +1735,7 @@
         // this with CORS, in which case Gemini's URL reader is the fallback.
         var ctrl = ("AbortController" in window) ? new AbortController() : null;
         var to = setTimeout(function () { if (ctrl) ctrl.abort(); }, 8000);
-        return fetch(src.url, { signal: ctrl ? ctrl.signal : undefined, credentials: "omit" })
+        return fetch(src.url, { signal: ctrl ? ctrl.signal : undefined, credentials: "omit", referrerPolicy: "no-referrer" })
           .then(function (res) { if (!res.ok) throw new Error("http"); return res.text(); })
           .then(function (html) {
             clearTimeout(to);
@@ -1946,6 +1969,10 @@
 
         // Key slot
         renderKeyStatus();
+        $("key-input").addEventListener("input", function () {
+          var c = this.value.replace(/[\s\u0000-\u001f\u007f-\u009f]/g, "");
+          if (c !== this.value) this.value = c;
+        });
         $("key-toggle").addEventListener("click", function () {
           var inp = $("key-input");
           var show = inp.type === "password";
@@ -1956,6 +1983,7 @@
         $("key-save").addEventListener("click", function () {
           var v = $("key-input").value.trim();
           if (!v) { keyMsg("Paste a key first, then Save.", "bad"); return; }
+          if (!validKeyFormat(v)) { keyMsg("That doesn't look like a Gemini API key — the real key is one unbroken string of letters, numbers, dashes and underscores, with no spaces. Copy the whole key from AI Studio and try again.", "bad"); return; }
           setKey(v);
           $("key-input").value = "";
           $("key-input").type = "password";
@@ -1974,6 +2002,7 @@
           var typed = $("key-input").value.trim();
           var key = typed || getKey();
           if (!key) { keyMsg("No key to test — paste one above, or save one first.", "bad"); return; }
+          if (typed && !validKeyFormat(typed)) { keyMsg("That doesn't look like a Gemini API key — one unbroken string of letters, numbers, dashes and underscores, no spaces. Check the paste and try again.", "bad"); return; }
           var gate = rateGate();
           if (!gate.ok) { keyMsg(gate.msg, "bad"); return; }
           var btn = this;
