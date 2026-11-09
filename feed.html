@@ -190,7 +190,7 @@
         cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; gap: 7px;
         white-space: nowrap;
       }
-      .chip .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--ink-3); flex: none; }
+      .chip .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--dot, var(--ink-3)); flex: none; }
       .chip[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
       .chip[aria-pressed="true"] .dot { background: var(--on-accent); }
 
@@ -1871,7 +1871,7 @@
           b.setAttribute("data-cat", c);
           if (c !== "All") {
             var d = el("span", "dot");
-            d.style.background = CAT_COLORS[c] || "var(--ink-3)";
+            d.style.setProperty("--dot", CAT_COLORS[c] || "var(--ink-3)");
             b.appendChild(d);
           }
           b.appendChild(document.createTextNode(c));
